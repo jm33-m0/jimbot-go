@@ -1,2 +1,2 @@
-# jimbot-go
-a Telegram bot created for my gf, written in Go
+# jimbot-ng
+a telegram bot for my gf
