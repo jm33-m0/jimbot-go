@@ -1,9 +1,10 @@
-package lib
+package jimbot
 
 import (
-	"jimbot-go/util"
 	"strings"
 )
+
+const info = "Under development"
 
 // ProcessCmd : handles bot commands
 func ProcessCmd(command string, userID int64) string {
@@ -12,17 +13,17 @@ func ProcessCmd(command string, userID int64) string {
 		msg := start(userID)
 		return msg
 	case "google":
-		return "Under development"
+		return info
 	case "stat":
-		return "Under development"
+		return info
 	case "translate":
-		return "Under development"
+		return info
 	case "pic":
-		return "Under development"
+		return info
 	case "3_day_forecast":
-		return "Under development"
+		return info
 	case "weather":
-		return "Under development"
+		return info
 	case "prices":
 		msg := prices()
 		return msg
@@ -51,7 +52,7 @@ func start(userID int64) string {
 }
 
 func prices() string {
-	btcPrice := util.GetPrice("BTC")
+	btcPrice := GetPrice("BTC")
 	msg := HII + " I got this list\n`"
 	msg += strings.Repeat("-", 35)
 	msg += "\n"
@@ -65,7 +66,7 @@ func prices() string {
 }
 
 func getAltcoinPrices(coin string) string {
-	coinPrice := util.GetPrice(coin)
+	coinPrice := GetPrice(coin)
 	var msg string
 	msg += coinPrice.CoinName + " -> USD : " + coinPrice.PriceInUSD + "\n"
 	msg += coinPrice.CoinName + " -> BTC : " + coinPrice.PriceInBTC + "\n"

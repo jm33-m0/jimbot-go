@@ -1,4 +1,4 @@
-package util
+package jimbot
 
 import (
 	"io/ioutil"
@@ -46,8 +46,8 @@ func GetPrice(coin string) CoinPrice {
 
 	if resp, err := http.Get(coinURL); err == nil {
 		defer resp.Body.Close()
-		readBody, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
+		readBody, e := ioutil.ReadAll(resp.Body)
+		if e != nil {
 			log.Println("[-] Error getting API response")
 			log.Print(err)
 			return CoinPrice{coin, "n/a", "n/a"}
@@ -55,15 +55,15 @@ func GetPrice(coin string) CoinPrice {
 
 		switch coin {
 		case "BTC":
-			priceVal, _, _, err := jsonparser.Get(readBody, "USD")
-			if err == nil {
+			priceVal, _, _, priceErr := jsonparser.Get(readBody, "USD")
+			if priceErr == nil {
 				log.Print("[++] BTC Price: " + string(priceVal))
 			}
 			retVal = CoinPrice{coin, "1", string(priceVal)}
 		default:
-			priceVal, _, _, err := jsonparser.Get(readBody, "USD")
-			priceValBTC, _, _, err := jsonparser.Get(readBody, "BTC")
-			if err == nil {
+			priceVal, _, _, eusd := jsonparser.Get(readBody, "USD")
+			priceValBTC, _, _, ebtc := jsonparser.Get(readBody, "BTC")
+			if eusd == nil && ebtc == nil {
 				log.Printf("[++] %s Price: %s USD, %s BTC", coin, priceVal, priceValBTC)
 			}
 			retVal = CoinPrice{coin, string(priceValBTC), string(priceVal)}

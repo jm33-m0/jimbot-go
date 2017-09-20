@@ -1,12 +1,12 @@
 package main
 
 import (
-	"jimbot-go/lib"
+	"jimbot-go/jimbot"
 	"time"
 )
 
 func main() {
-	go lib.StartBot()
+	go jimbot.StartBot()
 	for {
 		time.Sleep(60 * time.Second)
 	}
