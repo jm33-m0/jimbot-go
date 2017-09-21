@@ -20,6 +20,8 @@ const (
 	SURPRISE = "😮"
 )
 
+var emojis = make([]string, 0)
+
 // DecisionMaker : decide if a a reply is needed, randomly
 func DecisionMaker() bool {
 	timeSeed := time.Now().UnixNano()
@@ -40,6 +42,18 @@ func ChoiceMaker(choices []string) string {
 
 // ProcessMsg : handles chat messages
 func ProcessMsg(message string, userID int64) string {
+	// emojis for response
+	emojis = append(emojis,
+		KISS,
+		HEART,
+		TONGUE,
+		UNHAPPY,
+		SILENT,
+		HUH,
+		SWEAT,
+		HII,
+		SURPRISE)
+
 	if strings.Contains(message, "谢谢") ||
 		strings.Contains(message, "thanks") ||
 		strings.Contains(message, "thank you") {
@@ -62,5 +76,5 @@ func ProcessMsg(message string, userID int64) string {
 		}
 		return "不存在的"
 	}
-	return HUH
+	return ChoiceMaker(emojis)
 }
