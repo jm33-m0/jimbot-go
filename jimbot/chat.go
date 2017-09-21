@@ -35,7 +35,7 @@ func DecisionMaker() bool {
 // ChoiceMaker : Select a random item from a slice
 func ChoiceMaker(choices []string) string {
 	rand.Seed(time.Now().Unix())
-	return choices[rand.Intn[len(choices)]]
+	return choices[rand.Intn(len(choices))]
 }
 
 // ProcessMsg : handles chat messages
