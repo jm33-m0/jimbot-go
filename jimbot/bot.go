@@ -68,6 +68,14 @@ func StartBot() {
 			continue
 		}
 
+		// decide if make reponse
+		if !DecisionMaker() {
+			log.Println("[***] IGNORING MSG")
+			continue
+		}
+
+		log.Println("[***] MAKING RESPONSE")
+
 		// Generate reply
 		replyMsg := tgbotapi.NewMessage(chatID, ProcessMsg(msgText, userID))
 

@@ -1,7 +1,10 @@
 package jimbot
 
 import (
+	"log"
+	"math/rand"
 	"strings"
+	"time"
 )
 
 // Emojis
@@ -16,6 +19,18 @@ const (
 	SWEAT    = "😓"
 	SURPRISE = "😮"
 )
+
+// DecisionMaker : decide if a a reply is needed
+func DecisionMaker() bool {
+	timeSeed := time.Now().UnixNano()
+	randNum := rand.Intn(int(timeSeed))
+	log.Print("[***] RANDNUM = ", randNum)
+	if randNum%12443 == 0 {
+		log.Println("[***] DECIDE TO RESPOND")
+		return true
+	}
+	return false
+}
 
 // ProcessMsg : handles chat messages
 func ProcessMsg(message string, userID int64) string {
