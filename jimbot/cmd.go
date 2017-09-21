@@ -75,6 +75,7 @@ func getAltcoinPrices(coin string) string {
 }
 
 func googleSearch(command string) string {
-	query := strings.Split(command, "/google ")[1]
+	query := "test"
+	//query := strings.Split(command, "/google ")[0]
 	return Search(query, false)
 }
