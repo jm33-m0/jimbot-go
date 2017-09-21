@@ -13,7 +13,8 @@ func ProcessCmd(command string, userID int64) string {
 		msg := start(userID)
 		return msg
 	case "google":
-		return info
+		msg := googleSearch(command)
+		return msg
 	case "stat":
 		return info
 	case "translate":
@@ -71,4 +72,9 @@ func getAltcoinPrices(coin string) string {
 	msg += coinPrice.CoinName + " -> USD : " + coinPrice.PriceInUSD + "\n"
 	msg += coinPrice.CoinName + " -> BTC : " + coinPrice.PriceInBTC + "\n"
 	return msg
+}
+
+func googleSearch(command string) string {
+	query := strings.Split(command, "/google ")[1]
+	return Search(query, false)
 }
