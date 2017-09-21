@@ -60,7 +60,7 @@ func Search(query string, image bool) string {
 	log.Printf("Title: %s\n", result.Result.Title)
 	log.Printf("Snippet: %s\n", result.Result.Snippet)
 
-	return (result.Result.Title + "\n" + result.Result.Snippet + "\n" + result.Result.Link)
+	return ("Title: " + result.Result.Title + "\n\nSnippet: " + result.Result.Snippet + "\n\nURL: " + result.Result.Link)
 }
 
 func doSearch(search *customsearch.CseListCall) (result Result) {
