@@ -62,7 +62,8 @@ func StartBot() {
 			cmdMsg := tgbotapi.NewMessage(chatID, "")
 			cmdMsg.ReplyToMessageID = messageID
 			cmdMsg.ParseMode = "markdown"
-			cmdMsg.Text = ProcessCmd(cmd, userID)
+			cmdArgs := update.Message.CommandArguments()
+			cmdMsg.Text = ProcessCmd(cmd, cmdArgs, userID)
 			bot.Send(tgbotapi.NewChatAction(chatID, tgbotapi.ChatTyping))
 			bot.Send(cmdMsg)
 			continue
