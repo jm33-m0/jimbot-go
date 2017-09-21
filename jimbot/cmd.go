@@ -24,6 +24,10 @@ func ProcessCmd(command string, userID int64) string {
 	case "prices":
 		msg := prices()
 		return msg
+	case "google":
+		return ProcessMsg(command, userID)
+	case "pic":
+		return ProcessMsg(command, userID)
 	default:
 		return "Unknown command"
 	}
