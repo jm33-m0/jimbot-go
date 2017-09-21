@@ -22,7 +22,7 @@ func ToEnglish(text string) string {
 	}
 	defer req.Body.Close()
 	readBody, _ := ioutil.ReadAll(req.Body)
-	log.Print("[+++] TRANSLATE response: ", readBody)
+	log.Print("[+++] TRANSLATE response: ", string(readBody))
 
 	//data, _, _, _  := jsonparser.Get(readBody, [0][0][0])
 
