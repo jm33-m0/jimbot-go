@@ -37,12 +37,12 @@ func start(userID int64) string {
 	switch userID {
 	case ReadConfig().GFID:
 		msg = "Hi, I'm your Telegram bot,\n"
-		msg += "hope you like me\n"
-		msg += "if not, well... blame him"
-		msg += "and... I love you too\n"
+		msg += "hope I'll be loved,\n"
+		msg += "if not, well... blame him,"
+		msg += "and... I love you two\n"
 	case ReadConfig().BFID:
-		msg = "Hi, I guess you already knew me well\n"
-		msg += "let's cut the bullshit\n"
+		msg = "Hi, I'm your Telegram bot, and...\n"
+		msg += "I'll always be here with you,\n"
 		msg += "and... I love you two\n"
 	default:
 		msg = "There must be something wrong...\n"
