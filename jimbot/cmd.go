@@ -17,7 +17,7 @@ func ProcessCmd(command string, commandArgs string, userID int64) string {
 	case "stat":
 		return info
 	case "translate":
-		return info
+		return ToEnglish(commandArgs)
 	case "3_day_forecast":
 		return info
 	case "weather":
