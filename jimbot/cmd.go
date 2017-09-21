@@ -9,6 +9,7 @@ const info = "Under development"
 
 // ProcessCmd : handles bot commands
 func ProcessCmd(command string, commandArgs string, userID int64) string {
+	command = strings.ToLower(command)
 	switch command {
 	case "start":
 		msg := start(userID)
@@ -25,9 +26,9 @@ func ProcessCmd(command string, commandArgs string, userID int64) string {
 		msg := prices()
 		return msg
 	case "google":
-		return GoogleSearch(commandArgs, false)
+		return googleSearch(commandArgs, false)
 	case "pic":
-		return GoogleSearch(commandArgs, true)
+		return googleSearch(commandArgs, true)
 	default:
 		return "Unknown command"
 	}
@@ -74,8 +75,7 @@ func getAltcoinPrices(coin string) string {
 	return msg
 }
 
-// GoogleSearch : for google search
-func GoogleSearch(query string, image bool) string {
+func googleSearch(query string, image bool) string {
 	log.Print("[###] Google query is : ", query)
 	return Search(query, image)
 }

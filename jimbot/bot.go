@@ -18,6 +18,7 @@ type Config struct {
 	Token  string
 	GFName string
 	BFName string
+	CSE    string
 	GFID   int64
 	BFID   int64
 }
@@ -136,12 +137,14 @@ func ReadConfig() Config {
 			retVal.BFID, _ = strconv.ParseInt(strings.Trim(value, "\n"), 0, 64)
 		case "Token":
 			retVal.Token = strings.Trim(value, "\n")
+		case "CSE":
+			retVal.CSE = strings.Trim(value, "\n")
 		default:
 			log.Println("[-] Check your config file")
 			os.Exit(1)
 		}
 	}
-	log.Print("Please check your config:\n==============================================================\n",
+	log.Print("======================Please check your config:======================\n",
 		retVal)
 	return retVal
 }

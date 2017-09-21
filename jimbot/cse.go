@@ -18,10 +18,6 @@ const (
 	noResult = HUH + " Google search returned no result"
 )
 
-var (
-	cseID = "003328653249004544887:7wigecuebfo"
-)
-
 // Search : CSE search, for external use
 func Search(query string, image bool) string {
 	data, err := ioutil.ReadFile("cse-search-key.json")
@@ -47,11 +43,15 @@ func Search(query string, image bool) string {
 	if image == true {
 		search.SearchType("image")
 	}
+
+	// CSE id of your search engine
+	cseID := ReadConfig().CSE
 	search.Cx(cseID)
+
 	result := doSearch(search)
 
 	if result.Position == 0 {
-		log.Fatal("No results found in the top 10 pages.\n")
+		log.Println("No results found in the top 10 pages.")
 	}
 
 	log.Println("*********************Google Search****************************")
@@ -60,7 +60,7 @@ func Search(query string, image bool) string {
 	log.Printf("Title: %s\n", result.Result.Title)
 	log.Printf("Snippet: %s\n", result.Result.Snippet)
 
-	return result.Result.Link
+	return (result.Result.Title + "\n" + result.Result.Snippet + "\n" + result.Result.Link)
 }
 
 func doSearch(search *customsearch.CseListCall) (result Result) {

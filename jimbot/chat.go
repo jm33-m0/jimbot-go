@@ -27,7 +27,7 @@ func DecisionMaker() bool {
 	timeSeed := time.Now().UnixNano()
 	randNum := rand.Intn(int(timeSeed))
 	log.Print("[***] RANDNUM = ", randNum)
-	if randNum%15 == 0 {
+	if randNum%5 == 0 {
 		log.Println("[***] DECIDED TO RESPOND")
 		return true
 	}
@@ -78,7 +78,8 @@ func ProcessMsg(message string, userID int64) string {
 		}
 		return "不存在的"
 	} else if strings.Contains(message, "是啥") ||
-		strings.Contains(message, "是什么") {
+		strings.Contains(message, "是什么") ||
+		strings.Contains(message, "什么") {
 		return "不知道"
 	}
 	return ChoiceMaker(emojis)
