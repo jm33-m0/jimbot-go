@@ -26,8 +26,8 @@ func ToEnglish(text string) string {
 	data, _, _, _ := jsonparser.Get(readBody, "[0]", "[0]", "[0]")
 
 	log.Print("[+++] TRANSLATE response: ", string(readBody))
-	log.Print("[+++] TRANSLATE response decoded: ", data)
+	log.Print("[+++] TRANSLATE response decoded: ", string(data))
 
-	textTrans = "Test translate"
+	textTrans = string(data)
 	return textTrans
 }
