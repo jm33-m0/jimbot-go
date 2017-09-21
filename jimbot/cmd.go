@@ -1,6 +1,7 @@
 package jimbot
 
 import (
+	"log"
 	"strings"
 )
 
@@ -12,14 +13,9 @@ func ProcessCmd(command string, userID int64) string {
 	case "start":
 		msg := start(userID)
 		return msg
-	case "google":
-		msg := googleSearch(command)
-		return msg
 	case "stat":
 		return info
 	case "translate":
-		return info
-	case "pic":
 		return info
 	case "3_day_forecast":
 		return info
@@ -74,8 +70,9 @@ func getAltcoinPrices(coin string) string {
 	return msg
 }
 
-func googleSearch(command string) string {
-	query := "test"
-	//query := strings.Split(command, "/google ")[0]
-	return Search(query, false)
+// GoogleSearch : for google search
+func GoogleSearch(msg string, image bool) string {
+	query := strings.Split(msg, "/google ")[1]
+	log.Print("[###] Google query is : ", query)
+	return Search(query, image)
 }

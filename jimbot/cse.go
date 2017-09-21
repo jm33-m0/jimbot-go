@@ -82,7 +82,7 @@ func doSearch(search *customsearch.CseListCall) (result Result) {
 				Position: position,
 				Result:   csResult,
 			}
-			return
+			return // need only the first result
 		}
 
 		// No more search results?
