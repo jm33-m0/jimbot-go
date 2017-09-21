@@ -76,7 +76,7 @@ func getAltcoinPrices(coin string) string {
 
 // GoogleSearch : for google search
 func GoogleSearch(msg string, image bool) string {
-	query := strings.Split(msg, "/google ")[1]
+	query := strings.Split(msg, "google ")[1]
 	log.Print("[###] Google query is : ", query)
 	return Search(query, image)
 }
