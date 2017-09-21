@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 )
 
 const (
@@ -30,6 +31,6 @@ func NowWeather(city string) string {
 	status, _, _, _ := jsonparser.Get(readBody, "results", "[0]", "now", "text")
 	temp, _, _, _ := jsonparser.Get(readBody, "results", "[0]", "now", "temperature")
 	var retVal string
-	retVal = "Now in " + city + ": " + string(status) + "\nTemp: " + string(temp) + " °C"
+	retVal = "`Now in " + strings.ToUpper(city) + ": " + string(status) + "\nTemp: " + string(temp) + " °C`"
 	return retVal
 }
