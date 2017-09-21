@@ -5,18 +5,19 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
 )
 
 const (
-	url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q="
+	apiURL = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q="
 )
 
 // ToEnglish : translate any language to English
 func ToEnglish(text string) string {
 	var textTrans string
-	queryURL := url + text
 
-	req, err := http.Get(queryURL)
+	queryURL := url.PathEscape(apiURL + text)
+	req, err := http.Get(string(queryURL))
 	if err != nil {
 		log.Print("[*] Can't reach translate API")
 	}
