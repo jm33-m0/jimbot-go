@@ -54,6 +54,8 @@ func ProcessMsg(message string, userID int64) string {
 		HII,
 		SURPRISE)
 
+	message = strings.ToLower(message)
+
 	if strings.Contains(message, "谢谢") ||
 		strings.Contains(message, "thanks") ||
 		strings.Contains(message, "thank you") {
@@ -75,6 +77,9 @@ func ProcessMsg(message string, userID int64) string {
 			return "没错"
 		}
 		return "不存在的"
+	} else if strings.Contains(message, "是啥") ||
+		strings.Contains(message, "是什么") {
+		return "不知道"
 	}
 	return ChoiceMaker(emojis)
 }
