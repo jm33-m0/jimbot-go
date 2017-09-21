@@ -5,7 +5,10 @@ import (
 	"strings"
 )
 
-const info = "Under development"
+const (
+	info    = "Under development"
+	unknown = "Unknown command"
+)
 
 // ProcessCmd : handles bot commands
 func ProcessCmd(command string, commandArgs string, userID int64) string {
@@ -29,11 +32,17 @@ func ProcessCmd(command string, commandArgs string, userID int64) string {
 		msg := prices()
 		return msg
 	case "google":
+		if commandArgs == "" {
+			return unknown
+		}
 		return googleSearch(commandArgs, false)
 	case "pic":
+		if commandArgs == "" {
+			return unknown
+		}
 		return googleSearch(commandArgs, true)
 	default:
-		return "Unknown command"
+		return unknown
 	}
 }
 
