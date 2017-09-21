@@ -63,6 +63,7 @@ func StartBot() {
 			cmdMsg := tgbotapi.NewMessage(chatID, "")
 			cmdMsg.ReplyToMessageID = messageID
 			cmdMsg.ParseMode = "markdown"
+			// cmdMsg.DisableWebPagePreview = true TODO : Get file directly from URL and upload it
 			cmdArgs := update.Message.CommandArguments()
 			cmdMsg.Text = ProcessCmd(cmd, cmdArgs, userID)
 			bot.Send(tgbotapi.NewChatAction(chatID, tgbotapi.ChatTyping))

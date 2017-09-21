@@ -28,6 +28,8 @@ func ToEnglish(text string) string {
 
 	data, _, _, _ := jsonparser.Get(readBody, "[0]", "[0]", "[0]")
 
+	// TODO : Parse raw []byte as UTF-8 string
+
 	log.Print("[+++] TRANSLATE response: ", string(readBody))
 	log.Print("[+++] TRANSLATE response decoded: ", string(data))
 

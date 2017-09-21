@@ -21,7 +21,10 @@ func ProcessCmd(command string, commandArgs string, userID int64) string {
 	case "3_day_forecast":
 		return info
 	case "weather":
-		return info
+		if userID == ReadConfig().GFID {
+			return NowWeather("zhengzhou")
+		}
+		return NowWeather("changsha")
 	case "prices":
 		msg := prices()
 		return msg
