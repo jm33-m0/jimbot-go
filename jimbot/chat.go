@@ -80,9 +80,9 @@ func ProcessMsg(message string, userID int64) string {
 	} else if strings.Contains(message, "是啥") ||
 		strings.Contains(message, "是什么") {
 		return "不知道"
-	} else if strings.HasPrefix(message, "/google ") {
+	} else if strings.HasPrefix(message, "google") {
 		return GoogleSearch(message, false)
-	} else if strings.HasPrefix(message, "pic ") {
+	} else if strings.HasPrefix(message, "pic") {
 		return GoogleSearch(message, true)
 	}
 	return ChoiceMaker(emojis)
