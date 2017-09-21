@@ -17,6 +17,7 @@ func ToEnglish(text string) string {
 	var textTrans string
 
 	queryURL := url.PathEscape(apiURL + text)
+	log.Print("[*] TRANSLATE API URL: ", queryURL)
 	req, err := http.Get(string(queryURL))
 	if err != nil {
 		log.Print("[*] Can't reach translate API")
