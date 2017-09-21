@@ -1,7 +1,7 @@
 package jimbot
 
 import (
-	//"github.com/buger/jsonparser"
+	"github.com/buger/jsonparser"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -22,9 +22,11 @@ func ToEnglish(text string) string {
 	}
 	defer req.Body.Close()
 	readBody, _ := ioutil.ReadAll(req.Body)
-	log.Print("[+++] TRANSLATE response: ", string(readBody))
 
-	//data, _, _, _  := jsonparser.Get(readBody, [0][0][0])
+	data, _, _, _ := jsonparser.Get(readBody, "[0]", "[0]", "[0]")
+
+	log.Print("[+++] TRANSLATE response: ", string(readBody))
+	log.Print("[+++] TRANSLATE response decoded: ", data)
 
 	textTrans = "Test translate"
 	return textTrans
