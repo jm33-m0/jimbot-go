@@ -25,7 +25,7 @@ func DecisionMaker() bool {
 	timeSeed := time.Now().UnixNano()
 	randNum := rand.Intn(int(timeSeed))
 	log.Print("[***] RANDNUM = ", randNum)
-	if randNum%12443 == 0 {
+	if randNum%10 == 0 {
 		log.Println("[***] DECIDE TO RESPOND")
 		return true
 	}
