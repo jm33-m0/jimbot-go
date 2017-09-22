@@ -112,8 +112,9 @@ func countMsg() string {
 		}
 	}
 	counter += 150000
-	const timeFormat = "2016-12-05 14:21 UTC"
-	then, _ := time.Parse(timeFormat, timeFormat)
+	const timeFormat = "2001-01-01 00:00 UTC"
+	anniversary := "2016-12-05 14:21 UTC"
+	then, _ := time.Parse(timeFormat, anniversary)
 	log.Print("[TIME] then = ", then, "\n")
 	duration := time.Since(then)
 	log.Print("[TIME] duration = ", duration.Hours())
