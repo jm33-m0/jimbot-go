@@ -1,8 +1,11 @@
 package jimbot
 
 import (
+	"bufio"
 	"log"
+	"os"
 	"strings"
+	"time"
 )
 
 const (
@@ -19,6 +22,8 @@ func ProcessCmd(command string, commandArgs string, userID int64) string {
 		return msg
 	case "stat":
 		return info
+	case "count":
+		return countMsg()
 	case "translate":
 		return ToEnglish(commandArgs)
 	case "3_day_forecast":
@@ -90,4 +95,26 @@ func getAltcoinPrices(coin string) string {
 func googleSearch(query string, image bool) string {
 	log.Print("[###] Google query is : ", query)
 	return Search(query, image)
+}
+
+func countMsg() string {
+	counter := 0
+	histfile, err := os.Open("history.txt")
+	defer histfile.Close()
+	if err != nil {
+		log.Print("Failed to read history", err)
+	}
+	scanner := bufio.NewScanner(bufio.NewReader(histfile))
+	for scanner.Scan() {
+		line := scanner.Text()
+		if strings.HasPrefix(line, "[*]") {
+			counter++
+		}
+	}
+	counter += 19200
+	const timeFormat = "2016-12-05 22:21 BST"
+	//nowTime := time.Now().Format(timeFormat)
+	then, _ := time.Parse(timeFormat, timeFormat)
+	duration := time.Since(then)
+	return (HII + " I've received " + string(counter) + " messages from you two\n" + "It's been " + string(int(duration.Hours()/24)) + " days since you were together")
 }

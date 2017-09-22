@@ -71,6 +71,8 @@ func StartBot() {
 			continue
 		}
 
+		// Write to histfile
+
 		// decide if make reponse
 		if !DecisionMaker() {
 			log.Println("[***] IGNORING MSG")
