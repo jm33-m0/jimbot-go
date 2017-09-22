@@ -113,7 +113,7 @@ func countMsg() string {
 		}
 	}
 	counter += 152843
-	anniversary := "2016-12-05T14:23:00:00Z"
+	anniversary := "2016-12-05T00:00:00:00Z"
 	then, _ := time.Parse(time.RFC3339, anniversary)
 	log.Print("[TIME] then = ", then.Format(time.RFC1123), "\n")
 	duration := time.Since(then)
