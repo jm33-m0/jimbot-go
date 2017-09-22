@@ -117,8 +117,8 @@ func countMsg() string {
 	then, _ := time.Parse(time.RFC3339, anniversary)
 	log.Print("[TIME] then = ", then.Format(time.RFC1123), "\n")
 	duration := time.Since(then)
-	days := strconv.Itoa(int(duration.Hours() / 24))
+	days := strconv.Itoa(int(int(duration.Hours()) / 24))
 	log.Print("[TIME] duration = ", days)
 	log.Print("[HIST LENGTH] ", counter)
-	return (HII + " I've received " + strconv.Itoa(counter) + " messages from you two,\n" + "and it's been " + days + " days since you were together")
+	return (HII + " I've received " + strconv.Itoa(counter) + " messages from you two, and it's been " + days + " days since you were together")
 }
