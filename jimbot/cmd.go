@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"log"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -111,13 +112,13 @@ func countMsg() string {
 			counter++
 		}
 	}
-	counter += 150000
-	const timeFormat = "2001-01-01 00:00 UTC"
-	anniversary := "2016-12-05 14:21 UTC"
-	then, _ := time.Parse(timeFormat, anniversary)
-	log.Print("[TIME] then = ", then, "\n")
+	counter += 152843
+	anniversary := "2016-12-05T14:23:00:00Z"
+	then, _ := time.Parse(time.RFC3339, anniversary)
+	log.Print("[TIME] then = ", then.Format(time.RFC1123), "\n")
 	duration := time.Since(then)
-	log.Print("[TIME] duration = ", duration.Hours())
+	days := strconv.Itoa(int(duration.Hours() / 24))
+	log.Print("[TIME] duration = ", days)
 	log.Print("[HIST LENGTH] ", counter)
-	return (HII + " I've received " + string(counter) + " messages from you two\n" + "It's been " + string(int(duration.Hours()/24)) + " days since you were together")
+	return (HII + " I've received " + strconv.Itoa(counter) + " messages from you two,\n" + "and it's been " + days + " days since you were together")
 }
