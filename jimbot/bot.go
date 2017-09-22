@@ -72,6 +72,12 @@ func StartBot() {
 		}
 
 		// Write to histfile
+		f, err := os.Create("history.txt")
+		if err != nil {
+			log.Print("[==] failed to create histfile")
+		}
+		defer f.Close()
+		f.WriteString("[*] " + update.Message.Text)
 
 		// decide if make reponse
 		if !DecisionMaker() {
