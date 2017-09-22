@@ -72,12 +72,9 @@ func StartBot() {
 		}
 
 		// Write to histfile
-		f, err := os.Create("history.txt")
-		if err != nil {
-			log.Print("[==] failed to create histfile")
+		if AppendStringToFile("history.txt", "[*] "+msgText) == nil {
+			log.Println("[+] Message recorded")
 		}
-		defer f.Close()
-		f.WriteString("[*] " + update.Message.Text)
 
 		// decide if make reponse
 		if !DecisionMaker() {
@@ -170,4 +167,19 @@ func loginToAPI() {
 	bot.Debug = true // for debugging
 
 	log.Printf("[+] Authorized on account %s\n\n", bot.Self.UserName)
+}
+
+// AppendStringToFile : append line to file
+func AppendStringToFile(path, text string) error {
+	f, err := os.OpenFile(path, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	_, err = f.WriteString(text)
+	if err != nil {
+		return err
+	}
+	return nil
 }

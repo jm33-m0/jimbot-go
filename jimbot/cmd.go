@@ -111,10 +111,11 @@ func countMsg() string {
 			counter++
 		}
 	}
-	counter += 19200
+	counter += 150000
 	const timeFormat = "2016-12-05 22:21 BST"
 	//nowTime := time.Now().Format(timeFormat)
 	then, _ := time.Parse(timeFormat, timeFormat)
 	duration := time.Since(then)
+	log.Print("[TIME] ", int(duration.Hours()/24), "\n", then)
 	return (HII + " I've received " + string(counter) + " messages from you two\n" + "It's been " + string(int(duration.Hours()/24)) + " days since you were together")
 }
