@@ -177,7 +177,7 @@ func AppendStringToFile(path, text string) error {
 	}
 	defer f.Close()
 
-	_, err = f.WriteString(text)
+	_, err = f.WriteString(text + "\n")
 	if err != nil {
 		return err
 	}
