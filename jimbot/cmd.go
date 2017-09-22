@@ -113,9 +113,8 @@ func countMsg() string {
 		}
 	}
 	counter += 152843
-	anniversary := "2016-12-05T00:00:00:00Z"
-	then, _ := time.Parse(time.RFC3339, anniversary)
-	log.Print("[TIME] then = ", then.Format(time.RFC1123), "\n")
+	then, _ := time.Parse(time.RFC3339, "2016-12-05T00:00:00Z")
+	log.Print("[TIME] then = ", then.Format(time.RFC3339), "\n")
 	duration := time.Since(then)
 	days := strconv.Itoa(int(int(duration.Hours()) / 24))
 	log.Print("[TIME] duration = ", days)
