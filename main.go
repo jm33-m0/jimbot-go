@@ -3,7 +3,7 @@ package main
 import (
 	"time"
 
-	"github.com/jm33-m0/jimbot-go/jimbot"
+	"github.github.com/jm33-m0/jimbot-go/jimbot"
 )
 
 func main() {
