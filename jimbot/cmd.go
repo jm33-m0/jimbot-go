@@ -120,7 +120,7 @@ func countMsg() string {
 	days := strconv.Itoa(int(int(duration.Hours()) / 24))
 	log.Print("[TIME] duration = ", days)
 	log.Print("[HIST LENGTH] ", counter)
-	return (HII + " I've received " + strconv.Itoa(counter) + " messages from you two, and you've been together for " + days)
+	return (HII + " I've received " + strconv.Itoa(counter) + " messages from you two, and you've been together for " + days + " days.")
 }
 
 func remindMeTo(args string) string {
