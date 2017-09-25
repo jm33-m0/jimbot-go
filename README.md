@@ -1,6 +1,10 @@
 # jimbot-go
 a telegram bot for my gf
 
+## screenshot
+
+![](/screenshots/screenshots.jpg)
+
 ## usage
 
 ```
