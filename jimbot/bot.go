@@ -7,6 +7,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/go-telegram-bot-api/telegram-bot-api"
 )
@@ -25,12 +26,16 @@ var (
 
 // Config : Read config info from text file
 type Config struct {
-	Token  string
-	GFName string
-	BFName string
-	CSE    string
-	GFID   int64
-	BFID   int64
+	Token    string
+	GFName   string
+	BFName   string
+	CSE      string
+	GFID     int64
+	BFID     int64
+	HerCity  string
+	HisCity  string
+	MemDay   string
+	Birthday string
 }
 
 // StartBot : Connect to Telegram bot API and start working
@@ -98,6 +103,36 @@ func onMessage(update tgbotapi.Update) {
 	// Write to histfile
 	if AppendStringToFile("history.txt", "[*] "+msgText) == nil {
 		log.Println("[+] Message recorded")
+	}
+
+	// Mem dates
+	memDate, greeting := checkMemDates()
+	if _, err := os.Stat(".memdate_detected"); os.IsNotExist(err) {
+		if memDate {
+			greetingMsg := tgbotapi.NewMessage(chatID, greeting)
+			bot.Send(tgbotapi.NewChatAction(chatID, tgbotapi.ChatTyping))
+			bot.Send(greetingMsg)
+			if _, err := os.Create(".memdate_detected"); err == nil {
+				log.Print("[MEMDATE] MEM DAY! file created")
+			} else {
+				log.Print("[MEM] Err creating file")
+			}
+			return
+		}
+	} else if !memDate {
+		if os.Remove(".memdate_detected") == nil {
+			log.Print("[MEMDATE] not mem date, removing file")
+		} else {
+			log.Print("[MEM] Err deleting file")
+		}
+	}
+
+	googleMsg := strings.ToLower(msgText)
+	if strings.HasPrefix(googleMsg, "google") {
+		googleReply := tgbotapi.NewMessage(chatID, ProcessMsg(msgText, userID))
+		bot.Send(tgbotapi.NewChatAction(chatID, tgbotapi.ChatTyping))
+		bot.Send(googleReply)
+		return
 	}
 
 	// decide if make reponse
@@ -169,6 +204,14 @@ func ReadConfig() Config {
 			retVal.Token = strings.Trim(value, "\n")
 		case "CSE":
 			retVal.CSE = strings.Trim(value, "\n")
+		case "HerCity":
+			retVal.HerCity = strings.Trim(value, "\n")
+		case "HisCity":
+			retVal.HisCity = strings.Trim(value, "\n")
+		case "Birthday":
+			retVal.Birthday = strings.Trim(value, "\n")
+		case "MemDay":
+			retVal.MemDay = strings.Trim(value, "\n")
 		default:
 			log.Println("[-] Check your config file")
 			os.Exit(1)
@@ -206,4 +249,16 @@ func AppendStringToFile(path, text string) error {
 		return err
 	}
 	return nil
+}
+
+func checkMemDates() (bool, string) {
+	birthDate, _ := time.Parse(time.RFC3339, ReadConfig().Birthday)
+	anniversary, _ := time.Parse(time.RFC3339, ReadConfig().MemDay)
+	nowDate := time.Now().Day()
+	if nowDate == birthDate.Day() {
+		return true, "🎂 灿姐生日快乐"
+	} else if nowDate == anniversary.Day() {
+		return true, KISS + " 灿姐好"
+	}
+	return false, ""
 }

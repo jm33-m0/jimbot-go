@@ -1,5 +1,7 @@
 package jimbot
 
+// NOTE not finished
+
 import (
 	"log"
 	"time"

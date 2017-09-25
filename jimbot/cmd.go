@@ -22,7 +22,8 @@ func ProcessCmd(command string, commandArgs string, userID int64) string {
 		msg := start(userID)
 		return msg
 	case "remindmeto":
-		//msg := remindMeTo(commandArgs)
+		// NOTE not finished
+		// msg := remindMeTo(commandArgs)
 		return info
 	case "count":
 		return countMsg()
@@ -32,9 +33,9 @@ func ProcessCmd(command string, commandArgs string, userID int64) string {
 		return info
 	case "weather":
 		if userID == ReadConfig().GFID {
-			return NowWeather("zhengzhou")
+			return NowWeather(ReadConfig().HisCity)
 		}
-		return NowWeather("changsha")
+		return NowWeather(ReadConfig().HerCity)
 	case "prices":
 		msg := prices()
 		return msg
@@ -123,6 +124,7 @@ func countMsg() string {
 	return (HII + " I've received " + strconv.Itoa(counter) + " messages from you two, and you've been together for " + days + " days.")
 }
 
+// NOTE not finished
 func remindMeTo(args string) string {
 	var reminder Reminder
 	if strings.Contains(args, "明天") {

@@ -20,14 +20,18 @@ const (
 	SURPRISE = "😮"
 )
 
-var emojis = make([]string, 0)
+var (
+	emojis = make([]string, 0)
+	yesNo  = make([]string, 0)
+	what   = make([]string, 0)
+)
 
 // DecisionMaker : decide if a a reply is needed, randomly
 func DecisionMaker() bool {
 	timeSeed := time.Now().UnixNano()
 	randNum := rand.Intn(int(timeSeed))
 	log.Print("[***] RANDNUM = ", randNum)
-	if randNum%5 == 0 {
+	if randNum%12 == 0 {
 		log.Println("[***] DECIDED TO RESPOND")
 		return true
 	}
@@ -54,6 +58,28 @@ func ProcessMsg(message string, userID int64) string {
 		HII,
 		SURPRISE)
 
+	// answers for yes or no
+	yesNo = append(yesNo,
+		"不存在的",
+		"嗯哼",
+		"说的没错",
+		"不对不对不对～",
+		"nope",
+		"no way",
+		"dunno",
+		"yeha",
+		"yea",
+		"yeah",
+		"ok")
+
+	// answers for what
+	what = append(what,
+		"不知道",
+		"dunno",
+		"emmm",
+		"what?",
+		"ask google")
+
 	message = strings.ToLower(message)
 
 	if strings.Contains(message, "谢谢") ||
@@ -73,14 +99,18 @@ func ProcessMsg(message string, userID int64) string {
 		strings.Contains(message, "对不") ||
 		strings.Contains(message, "对吗") ||
 		strings.Contains(message, "对么") {
-		if DecisionMaker() {
-			return "没错"
-		}
-		return "不存在的"
+		return ChoiceMaker(yesNo)
 	} else if strings.Contains(message, "是啥") ||
 		strings.Contains(message, "是什么") ||
 		strings.Contains(message, "什么") {
-		return "不知道"
+		if DecisionMaker() {
+			return Search(message, DecisionMaker())
+		}
+		return ChoiceMaker(what)
+	} else if strings.HasPrefix(message, "google") {
+		q := strings.Split(message, "google")[1:]
+		query := strings.Join(q, " ")
+		return Search(query, false)
 	}
 	return ChoiceMaker(emojis)
 }

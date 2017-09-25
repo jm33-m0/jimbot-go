@@ -1,5 +1,9 @@
 Girlfriend: gfname
 Boyfriend: bfname
-GFID: 123456789 
+HerCity: city
+HisCity: city
+Birthday: 0001-01-01T00:00:00Z
+MemDay: 0001-01-02T00:00:00Z
+GFID: 123456789
 BFID: 987654321
 Token: thisisyourtoken
