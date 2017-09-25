@@ -1,9 +1,9 @@
 package main
 
 import (
+	"jimbot-go/jimbot"
 	"time"
-
-	"github.com/jm33-m0/jimbot-go/jimbot"
+	//"github.com/jm33-m0/jimbot-go/jimbot"
 )
 
 func main() {

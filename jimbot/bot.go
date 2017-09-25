@@ -11,7 +11,17 @@ import (
 	"github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
-var bot *tgbotapi.BotAPI
+var (
+	// bot api
+	bot *tgbotapi.BotAPI
+
+	// chat parameters
+	chatID        int64
+	messageID     int
+	userID        int64
+	msgText       string
+	chatIsPrivate bool
+)
 
 // Config : Read config info from text file
 type Config struct {
@@ -38,63 +48,77 @@ func StartBot() {
 	}
 
 	for update := range updates {
-		// chat parameters
-		chatID := update.Message.Chat.ID
-		messageID := update.Message.MessageID
-		msgText := update.Message.Text
-		chatIsPrivate := tgbotapi.Chat.IsPrivate(*update.Message.Chat)
-		userID := int64(update.Message.From.ID)
-		log.Print("[**] Got msg from userID: ", userID)
-
+		// handles empty update, prevent panic
 		if update.Message == nil {
 			continue
-		} else if userID != ReadConfig().BFID && userID != ReadConfig().GFID {
-			log.Print("[!] Comparing userID <> BFID: ",
-				userID,
-				" <> ",
-				ReadConfig().BFID)
-			warningText := HUH + " I'm sorry, but I won't talk to you"
-			warning := tgbotapi.NewMessage(chatID, warningText)
-			bot.Send(tgbotapi.NewChatAction(chatID, tgbotapi.ChatTyping))
-			bot.Send(warning)
-			continue
-		} else if update.Message.IsCommand() {
-			cmd := update.Message.Command()
-			cmdMsg := tgbotapi.NewMessage(chatID, "")
-			cmdMsg.ReplyToMessageID = messageID
-			cmdMsg.ParseMode = "markdown"
-			// cmdMsg.DisableWebPagePreview = true TODO : Get file directly from URL and upload it
-			cmdArgs := update.Message.CommandArguments()
-			cmdMsg.Text = ProcessCmd(cmd, cmdArgs, userID)
-			bot.Send(tgbotapi.NewChatAction(chatID, tgbotapi.ChatTyping))
-			bot.Send(cmdMsg)
-			continue
 		}
 
-		// Write to histfile
-		if AppendStringToFile("history.txt", "[*] "+msgText) == nil {
-			log.Println("[+] Message recorded")
-		}
+		// chat parameters
+		chatID = update.Message.Chat.ID
+		messageID = update.Message.MessageID
+		chatIsPrivate = tgbotapi.Chat.IsPrivate(*update.Message.Chat)
+		msgText = update.Message.Text
+		userID = int64(update.Message.From.ID)
 
-		// decide if make reponse
-		if !DecisionMaker() {
-			log.Println("[***] IGNORING MSG")
-			continue
-		}
-
-		log.Println("[***] MAKING RESPONSE")
-
-		// Generate reply
-		replyMsg := tgbotapi.NewMessage(chatID, ProcessMsg(msgText, userID))
-
-		// if not in private chat, quote msg
-		if !chatIsPrivate {
-			replyMsg.ReplyToMessageID = messageID
-		}
-
-		bot.Send(tgbotapi.NewChatAction(chatID, tgbotapi.ChatTyping))
-		bot.Send(replyMsg)
+		// handles each message
+		log.Print("[**] Got msg from userID: ", userID)
+		go onMessage(update)
 	}
+}
+
+func onMessage(update tgbotapi.Update) {
+	/* on each message, do */
+
+	// say no to strangers
+	if userID != ReadConfig().BFID && userID != ReadConfig().GFID {
+		log.Print("[!] Comparing userID <> BFID: ",
+			userID,
+			" <> ",
+			ReadConfig().BFID)
+		warningText := HUH + " I'm sorry, but I won't talk to you"
+		warning := tgbotapi.NewMessage(chatID, warningText)
+		bot.Send(tgbotapi.NewChatAction(chatID, tgbotapi.ChatTyping))
+		bot.Send(warning)
+		return
+	}
+
+	// bot commands
+	if update.Message.IsCommand() {
+		cmd := update.Message.Command()
+		cmdMsg := tgbotapi.NewMessage(chatID, "")
+		cmdMsg.ReplyToMessageID = messageID
+		cmdMsg.ParseMode = "markdown"
+		cmdArgs := update.Message.CommandArguments()
+		cmdMsg.Text = ProcessCmd(cmd, cmdArgs, userID)
+		bot.Send(tgbotapi.NewChatAction(chatID, tgbotapi.ChatTyping))
+		bot.Send(cmdMsg)
+		return
+	}
+
+	// Write to histfile
+	if AppendStringToFile("history.txt", "[*] "+msgText) == nil {
+		log.Println("[+] Message recorded")
+	}
+
+	// decide if make reponse
+	if !DecisionMaker() {
+		log.Println("[***] IGNORING MSG")
+		return
+	}
+
+	log.Println("[***] MAKING RESPONSE")
+
+	// Generate reply
+	replyMsg := tgbotapi.NewMessage(chatID, ProcessMsg(msgText, userID))
+
+	// if not in private chat, quote msg
+	if !chatIsPrivate {
+		replyMsg.ReplyToMessageID = messageID
+	}
+
+	// send our reply
+	bot.Send(tgbotapi.NewChatAction(chatID, tgbotapi.ChatTyping))
+	bot.Send(replyMsg)
 }
 
 // FileToLines : Read lines from a text file
