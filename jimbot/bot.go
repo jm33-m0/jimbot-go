@@ -108,7 +108,7 @@ func onMessage(update tgbotapi.Update) {
 	// Mem dates
 	memDate, greeting := checkMemDates()
 	if _, err := os.Stat(".memdate_detected"); os.IsNotExist(err) {
-		if memDate {
+		if memDate && userID == ReadConfig().GFID {
 			greetingMsg := tgbotapi.NewMessage(chatID, greeting)
 			greetingMsg.ReplyToMessageID = messageID
 			bot.Send(tgbotapi.NewChatAction(chatID, tgbotapi.ChatTyping))
