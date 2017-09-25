@@ -119,6 +119,8 @@ func onMessage(update tgbotapi.Update) {
 				log.Print("[MEM] Err creating file")
 			}
 			return
+		} else {
+			log.Print("[MEM] No gf detected")
 		}
 	} else if !memDate {
 		if os.Remove(".memdate_detected") == nil {
