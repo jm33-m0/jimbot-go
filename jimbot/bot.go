@@ -110,6 +110,7 @@ func onMessage(update tgbotapi.Update) {
 	if _, err := os.Stat(".memdate_detected"); os.IsNotExist(err) {
 		if memDate {
 			greetingMsg := tgbotapi.NewMessage(chatID, greeting)
+			greetingMsg.ReplyToMessageID = messageID
 			bot.Send(tgbotapi.NewChatAction(chatID, tgbotapi.ChatTyping))
 			bot.Send(greetingMsg)
 			if _, err := os.Create(".memdate_detected"); err == nil {
@@ -130,6 +131,7 @@ func onMessage(update tgbotapi.Update) {
 	googleMsg := strings.ToLower(msgText)
 	if strings.HasPrefix(googleMsg, "google") {
 		googleReply := tgbotapi.NewMessage(chatID, ProcessMsg(msgText, userID))
+		googleReply.ReplyToMessageID = messageID
 		bot.Send(tgbotapi.NewChatAction(chatID, tgbotapi.ChatTyping))
 		bot.Send(googleReply)
 		return
