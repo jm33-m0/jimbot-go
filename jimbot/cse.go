@@ -1,11 +1,12 @@
 package jimbot
 
 import (
+	"io/ioutil"
+	"log"
+
 	"golang.org/x/oauth2"
 	google "golang.org/x/oauth2/google"
 	customsearch "google.golang.org/api/customsearch/v1"
-	"io/ioutil"
-	"log"
 )
 
 // Result : CSE search result type

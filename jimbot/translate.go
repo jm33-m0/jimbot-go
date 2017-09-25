@@ -1,11 +1,12 @@
 package jimbot
 
 import (
-	"github.com/buger/jsonparser"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
+
+	"github.com/buger/jsonparser"
 )
 
 const (

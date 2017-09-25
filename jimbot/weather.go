@@ -2,13 +2,15 @@ package jimbot
 
 import (
 	"fmt"
-	"github.com/buger/jsonparser"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
+
+	"github.com/buger/jsonparser"
 )
 
+// not used, but might be useful anyway
 const (
 	clouds = "⛅"
 	sunny  = "☀️"
