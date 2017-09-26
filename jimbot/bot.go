@@ -260,7 +260,7 @@ func checkMemDates() (bool, string) {
 	anniversary, _ := time.Parse(time.RFC3339, ReadConfig().MemDay)
 	nowDate := time.Now().Day()
 	if nowDate == birthDate.Day() {
-		return true, "🎂 灿姐生日快乐"
+		return true, "🎂 灿姐生日快乐\ncheck下红包?"
 	} else if nowDate == anniversary.Day() {
 		return true, KISS + " 灿姐好"
 	}
