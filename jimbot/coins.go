@@ -14,7 +14,7 @@ const (
 	xmr = "https://min-api.cryptocompare.com/data/price?fsym=XMR&tsyms=BTC,USD"
 	eth = "https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=BTC,USD"
 	etc = "https://min-api.cryptocompare.com/data/price?fsym=ETC&tsyms=BTC,USD"
-	bcc = "https://min-api.cryptocompare.com/data/price?fsym=BCC&tsyms=BTC,USD"
+	bcc = "https://min-api.cryptocompare.com/data/price?fsym=BCH&tsyms=BTC,USD"
 )
 
 // CoinPrice : Price info of a coin
