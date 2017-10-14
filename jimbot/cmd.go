@@ -76,7 +76,7 @@ func start(userID int64) string {
 func prices() string {
 	btcPrice := GetPrice("BTC")
 	msg := HII + " I got this list\n`"
-	msg += strings.Repeat("-", 35)
+	msg += strings.Repeat("-", 25)
 	msg += "\n"
 	msg += btcPrice.CoinName + " -> USD : " + btcPrice.PriceInUSD + "\n"
 	msg += getAltcoinPrices("XMR")
