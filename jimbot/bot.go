@@ -119,9 +119,8 @@ func onMessage(update tgbotapi.Update) {
 				log.Print("[MEM] Err creating file")
 			}
 			return
-		} else {
-			log.Print("[MEM] No gf detected")
 		}
+		log.Print("[MEM] No gf detected")
 	} else if !memDate {
 		if os.Remove(".memdate_detected") == nil {
 			log.Print("[MEMDATE] not mem date, removing file")
@@ -259,8 +258,10 @@ func checkMemDates() (bool, string) {
 	birthDate, _ := time.Parse(time.RFC3339, ReadConfig().Birthday)
 	anniversary, _ := time.Parse(time.RFC3339, ReadConfig().MemDay)
 	nowDate := time.Now().Day()
-	if nowDate == birthDate.Day() {
-		return true, "🎂 灿姐生日快乐\ncheck下红包?"
+	nowMonth := time.Now().Month()
+	if nowDate == birthDate.Day() &&
+		nowMonth == birthDate.Month() {
+		return true, "🎂 灿姐生日快乐"
 	} else if nowDate == anniversary.Day() {
 		return true, KISS + " 灿姐好"
 	}
