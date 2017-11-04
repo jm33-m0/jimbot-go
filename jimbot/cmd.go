@@ -43,12 +43,12 @@ func ProcessCmd(command string, commandArgs string, userID int64) string {
 		if commandArgs == "" {
 			return unknown
 		}
-		return googleSearch(commandArgs, false)
+		return Search(commandArgs, false)
 	case "pic":
 		if commandArgs == "" {
 			return unknown
 		}
-		return googleSearch(commandArgs, true)
+		return Search(commandArgs, true)
 	default:
 		return unknown
 	}
@@ -95,10 +95,10 @@ func getAltcoinPrices(coin string) string {
 	return msg
 }
 
-func googleSearch(query string, image bool) string {
-	log.Print("[###] Google query is : ", query)
-	return Search(query, image)
-}
+// func googleSearch(query string, image bool) string {
+// 	log.Print("[###] Google query is : ", query)
+// 	return Search(query, image)
+// }
 
 func countMsg() string {
 	counter := 0

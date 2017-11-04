@@ -26,16 +26,17 @@ var (
 
 // Config : Read config info from text file
 type Config struct {
-	Token    string
-	GFName   string
-	BFName   string
-	CSE      string
-	GFID     int64
-	BFID     int64
-	HerCity  string
-	HisCity  string
-	MemDay   string
-	Birthday string
+	Token           string
+	GFName          string
+	BFName          string
+	CSE             string
+	GFID            int64
+	BFID            int64
+	HerCity         string
+	HisCity         string
+	MemDay          string
+	MemdayGreetings string
+	Birthday        string
 }
 
 // StartBot : Connect to Telegram bot API and start working
@@ -129,15 +130,6 @@ func onMessage(update tgbotapi.Update) {
 		}
 	}
 
-	googleMsg := strings.ToLower(msgText)
-	if strings.HasPrefix(googleMsg, "google") {
-		googleReply := tgbotapi.NewMessage(chatID, ProcessMsg(msgText, userID))
-		googleReply.ReplyToMessageID = messageID
-		bot.Send(tgbotapi.NewChatAction(chatID, tgbotapi.ChatTyping))
-		bot.Send(googleReply)
-		return
-	}
-
 	// decide if make reponse
 	if !DecisionMaker() {
 		log.Println("[***] IGNORING MSG")
@@ -215,6 +207,8 @@ func ReadConfig() Config {
 			retVal.Birthday = strings.Trim(value, "\n")
 		case "MemDay":
 			retVal.MemDay = strings.Trim(value, "\n")
+		case "MemdayGreetings":
+			retVal.MemdayGreetings = string.Trim(value, "\n")
 		default:
 			log.Println("[-] Check your config file")
 			os.Exit(1)
@@ -259,11 +253,11 @@ func checkMemDates() (bool, string) {
 	anniversary, _ := time.Parse(time.RFC3339, ReadConfig().MemDay)
 	nowDate := time.Now().Day()
 	nowMonth := time.Now().Month()
-	if nowDate == birthDate.Day() &&
-		nowMonth == birthDate.Month() {
-		return true, "🎂 灿姐生日快乐"
-	} else if nowDate == anniversary.Day() {
-		return true, KISS + " 灿姐好"
+	if (nowDate == birthDate.Day() &&
+		nowMonth == birthDate.Month()) ||
+		(nowDate == anniversary.Day() &&
+			nowMonth == anniversary.Month()) {
+		return true, ReadConfig().MemdayGreetings
 	}
 	return false, ""
 }

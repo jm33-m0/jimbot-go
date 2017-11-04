@@ -55,7 +55,7 @@ func Search(query string, image bool) string {
 		log.Println("No results found in the top 10 pages.")
 	} else if result.Result.Link == "" {
 		log.Println("[---] NO RESULTS")
-		return (HUH + " No results from Google")
+		return noResult
 	}
 
 	log.Println("*********************Google Search****************************")
