@@ -93,9 +93,12 @@ func onMessage(update tgbotapi.Update) {
 		cmd := update.Message.Command()
 		cmdMsg := tgbotapi.NewMessage(chatID, "")
 		cmdMsg.ReplyToMessageID = messageID
-		cmdMsg.ParseMode = "markdown"
 		cmdArgs := update.Message.CommandArguments()
 		cmdMsg.Text = ProcessCmd(cmd, cmdArgs, userID)
+		if !strings.Contains(cmd, "google") &&
+			!strings.Contains(cmd, "pic") {
+			cmdMsg.ParseMode = "markdown"
+		}
 		bot.Send(tgbotapi.NewChatAction(chatID, tgbotapi.ChatTyping))
 		bot.Send(cmdMsg)
 		return
@@ -208,7 +211,7 @@ func ReadConfig() Config {
 		case "MemDay":
 			retVal.MemDay = strings.Trim(value, "\n")
 		case "MemdayGreetings":
-			retVal.MemdayGreetings = string.Trim(value, "\n")
+			retVal.MemdayGreetings = strings.Trim(value, "\n")
 		default:
 			log.Println("[-] Check your config file")
 			os.Exit(1)
