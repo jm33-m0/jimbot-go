@@ -7,3 +7,4 @@ MemDay: 0001-01-02T00:00:00Z
 GFID: 123456789
 BFID: 987654321
 Token: thisisyourtoken
+MemdayGreetings: 😘
