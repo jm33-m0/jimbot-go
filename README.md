@@ -8,9 +8,7 @@ a telegram bot for my gf
 ## usage
 
 ```
-go get -v -u github.com/jm33-m0/jimbot-go/jimbot
-git clone https://github.com/jm33-m0/jimbot-go.git
-cd jimbot-go
-go build
+go get -v -u github.com/jm33-m0/jimbot-go
+cp $GOPATH/bin/jimbot-go .
 ```
 then modify `config.txt`, and run the executable
