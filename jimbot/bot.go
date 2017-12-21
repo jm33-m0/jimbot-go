@@ -91,6 +91,7 @@ func onMessage(update tgbotapi.Update) {
 	// bot commands
 	if update.Message.IsCommand() {
 		cmd := update.Message.Command()
+		cmd = strings.ToLower(cmd) // avoid markdown parsing in URL
 		cmdMsg := tgbotapi.NewMessage(chatID, "")
 		cmdMsg.ReplyToMessageID = messageID
 		cmdArgs := update.Message.CommandArguments()
