@@ -17,26 +17,29 @@ var (
 	bot *tgbotapi.BotAPI
 
 	// chat parameters
-	chatID        int64
 	messageID     int
+	chatID        int64
 	userID        int64
-	msgText       string
 	chatIsPrivate bool
+	msgText       string
 )
 
 // Config : Read config info from text file
 type Config struct {
+	GFID int64
+	BFID int64
+
 	Token           string
 	GFName          string
 	BFName          string
 	CSE             string
-	GFID            int64
-	BFID            int64
 	HerCity         string
 	HisCity         string
 	MemDay          string
 	MemdayGreetings string
 	Birthday        string
+	HuobiAccessKey  string
+	HuobiSecretKey  string
 }
 
 // StartBot : Connect to Telegram bot API and start working
@@ -213,6 +216,10 @@ func ReadConfig() Config {
 			retVal.MemDay = strings.Trim(value, "\n")
 		case "MemdayGreetings":
 			retVal.MemdayGreetings = strings.Trim(value, "\n")
+		case "HuobiAccessKey":
+			retVal.HuobiAccessKey = strings.Trim(value, "\n")
+		case "HuobiSecretKey":
+			retVal.HuobiSecretKey = strings.Trim(value, "\n")
 		default:
 			log.Println("[-] Check your config file")
 			os.Exit(1)

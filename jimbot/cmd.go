@@ -49,6 +49,8 @@ func ProcessCmd(command string, commandArgs string, userID int64) string {
 			return unknown
 		}
 		return Search(commandArgs, true)
+	case "huobi_market":
+		return unknown
 	default:
 		return unknown
 	}
