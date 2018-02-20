@@ -1,7 +1,7 @@
 package huobi
 
 import (
-	huobiAPI "github.com/jm33-m0/huobi-go/services"
+	"log"
 	"strconv"
 )
 
@@ -18,5 +18,10 @@ func GetPrices() string {
 }
 
 func getClosePrice(sym string) string {
-	return strconv.FormatFloat(huobiAPI.GetMarketDetail(sym).Tick.Close, 'f', -1, 32)
+	priceDetail := GetMarketDetail(sym)
+	if priceDetail.ErrMsg != "" {
+		log.Print("[-] ErrMsg from huobi: ", priceDetail.ErrMsg)
+	}
+	price := priceDetail.Tick.Close
+	return strconv.FormatFloat(price, 'f', -1, 32)
 }
