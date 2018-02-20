@@ -8,11 +8,12 @@ import (
 // GetPrices : Get a list of coin prices
 func GetPrices() string {
 	btcUSDT := getClosePrice("btcusdt")
+	ethUSDT := getClosePrice("ethusdt")
 	ethBTC := getClosePrice("ethbtc")
-	htBTC := getClosePrice("htbtc")
 	htUSDT := getClosePrice("htusdt")
+	htBTC := getClosePrice("htbtc")
 
-	retVal := "`BTC - USDT : " + btcUSDT + "\n" + "ETH - BTC : " + ethBTC + "\n" + "HT - BTC : " + htBTC + "\n" + "HT - USDT : " + htUSDT + "`"
+	retVal := "`BTC - USDT : " + btcUSDT + "\nETH - USDT : " + ethUSDT + "\nETH - BTC  : " + ethBTC + "\nHT  - USDT : " + htUSDT + "\nHT  - BTC  : " + htBTC + "`"
 
 	return retVal
 }

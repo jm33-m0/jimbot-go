@@ -7,6 +7,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/jm33-m0/jimbot-go/huobi"
 )
 
 const (
@@ -50,7 +52,7 @@ func ProcessCmd(command string, commandArgs string, userID int64) string {
 		}
 		return Search(commandArgs, true)
 	case "huobi_market":
-		return unknown
+		return huobi.GetPrices()
 	default:
 		return unknown
 	}
