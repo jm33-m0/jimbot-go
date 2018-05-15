@@ -117,10 +117,19 @@ func onMessage(update tgbotapi.Update) {
 	memDate, greeting := checkMemDates()
 	if _, err := os.Stat(".memdate_detected"); os.IsNotExist(err) {
 		if memDate && userID == ReadConfig().GFID {
-			greetingMsg := tgbotapi.NewMessage(chatID, greeting)
-			greetingMsg.ReplyToMessageID = messageID
-			bot.Send(tgbotapi.NewChatAction(chatID, tgbotapi.ChatTyping))
-			bot.Send(greetingMsg)
+			// greetingMsg := tgbotapi.NewMessage(chatID, greeting)
+			// greetingMsg.ReplyToMessageID = messageID
+			// bot.Send(tgbotapi.NewChatAction(chatID, tgbotapi.ChatTyping))
+			// bot.Send(greetingMsg)
+
+			// send photo with caption
+			bot.Send(tgbotapi.NewChatAction(chatID, tgbotapi.ChatUploadPhoto))
+			pic := tgbotapi.NewPhotoUpload(chatID, "./img/mem.jpg")
+			pic.Caption = greeting
+			pic.ReplyToMessageID = messageID
+			bot.Send(pic)
+
+			// mark done
 			if _, err := os.Create(".memdate_detected"); err == nil {
 				log.Print("[MEMDATE] MEM DAY! file created")
 			} else {
