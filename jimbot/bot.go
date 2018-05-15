@@ -234,8 +234,8 @@ func ReadConfig() Config {
 			os.Exit(1)
 		}
 	}
-	log.Print("======================Please check your config:======================\n",
-		retVal)
+	// log.Print("======================Please check your config:======================\n",
+	// 	retVal)
 	return retVal
 }
 
