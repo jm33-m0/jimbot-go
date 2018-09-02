@@ -5,6 +5,8 @@ import (
 	"math/rand"
 	"strings"
 	"time"
+
+	"github.com/jm33-m0/jimbot-go/turing"
 )
 
 // Emojis
@@ -112,5 +114,11 @@ func ProcessMsg(message string, userID int64) string {
 		query := strings.Join(q, " ")
 		return Search(query, false)
 	}
+
+	// say something
+	if DecisionMaker {
+		return turing.GetResponse(message)
+	}
+
 	return ChoiceMaker(emojis)
 }

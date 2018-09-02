@@ -142,19 +142,23 @@ func onMessage(update tgbotapi.Update) {
 		}
 	}
 
-	// decide if make reponse
-	if !DecisionMaker() {
-		log.Println("[***] IGNORING MSG")
-		return
-	}
+	replyMsg := "empty"
+	if chatIsPrivate {
+		replyMsg = tgbotapi.NewMessage(chatID, ProcessMsg(msgText, userID))
+	} else {
 
-	log.Println("[***] MAKING RESPONSE")
+		// decide if make reponse
+		if !DecisionMaker() {
+			log.Println("[***] IGNORING MSG")
+			return
+		}
 
-	// Generate reply
-	replyMsg := tgbotapi.NewMessage(chatID, ProcessMsg(msgText, userID))
+		log.Println("[***] MAKING RESPONSE")
 
-	// if not in private chat, quote msg
-	if !chatIsPrivate {
+		// Generate reply
+		replyMsg = tgbotapi.NewMessage(chatID, ProcessMsg(msgText, userID))
+
+		// if not in private chat, quote msg
 		replyMsg.ReplyToMessageID = messageID
 	}
 
