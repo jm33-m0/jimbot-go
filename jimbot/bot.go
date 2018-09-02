@@ -142,7 +142,7 @@ func onMessage(update tgbotapi.Update) {
 		}
 	}
 
-	replyMsg := "empty"
+	var replyMsg tgbotapi.MessageConfig
 	if chatIsPrivate {
 		replyMsg = tgbotapi.NewMessage(chatID, ProcessMsg(msgText, userID))
 	} else {
