@@ -37,20 +37,14 @@ func GetResponse(input string) string {
 		}}`, input))
 
 	req, err := http.NewRequest("POST", apiURL, bytes.NewBuffer(data))
-	// req.Header.Set("X-Custom-Header", "myvalue")
 	req.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		panic(err)
+		return "Could not reach Turing API"
 	}
 
-	// resp, err := http.Post(apiURL, "application/json; charset=utf-8", data)
-	// if err != nil {
-	// 	fmt.Println("cat't post to turing api")
-	// 	return "turing post err"
-	// }
 	defer resp.Body.Close()
 	responseRaw, _ := ioutil.ReadAll(resp.Body)
 
