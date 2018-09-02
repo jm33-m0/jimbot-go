@@ -117,8 +117,7 @@ func ProcessMsg(message string, userID int64) string {
 
 	// say something
 	if DecisionMaker() {
-		return turing.GetResponse(message)
+		return ChoiceMaker(emojis)
 	}
-
-	return ChoiceMaker(emojis)
+	return turing.GetResponse(message)
 }
