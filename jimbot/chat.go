@@ -116,7 +116,7 @@ func ProcessMsg(message string, userID int64) string {
 	}
 
 	// say something
-	if DecisionMaker {
+	if DecisionMaker() {
 		return turing.GetResponse(message)
 	}
 
