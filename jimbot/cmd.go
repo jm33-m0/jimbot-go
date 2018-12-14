@@ -27,6 +27,14 @@ func ProcessCmd(command string, commandArgs string, userID int64) string {
 		// NOTE not finished
 		// msg := remindMeTo(commandArgs)
 		return info
+	case "memdate":
+		date := commandArgs
+		err := UpdateConfig("MemDay", "MemDay: "+date+"T00:00:00Z")
+		if err != nil {
+			log.Println(err)
+		}
+
+		return "Mem date set to " + date
 	case "greeting4mem":
 		msg := "Done"
 

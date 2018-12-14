@@ -121,7 +121,7 @@ func onMessage(update tgbotapi.Update) {
 	}
 
 	// Write to histfile
-	if AppendStringToFile("history.txt", "[*] "+msgText) == nil {
+	if WriteStringToFile("history.txt", "[*] "+msgText, false) == nil {
 		log.Println("[+] Message recorded")
 	}
 

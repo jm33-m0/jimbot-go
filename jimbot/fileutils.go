@@ -9,9 +9,13 @@ import (
 	"strings"
 )
 
-// AppendStringToFile : append line to file
-func AppendStringToFile(path, text string) error {
+// WriteStringToFile : write or append line to file
+func WriteStringToFile(path string, text string, overwrite bool) error {
+	var err error
 	f, err := os.OpenFile(path, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
+	if overwrite {
+		f, err = os.OpenFile(path, os.O_WRONLY, 0644)
+	}
 	if err != nil {
 		return err
 	}
@@ -59,7 +63,7 @@ func UpdateConfig(pattern string, withStr string) error {
 			line = withStr
 		}
 
-		err = AppendStringToFile("config.txt", line)
+		err = WriteStringToFile("config.txt", line, true)
 		if err != nil {
 			log.Printf("Error updating config: %s", err.Error())
 		}
