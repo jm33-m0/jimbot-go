@@ -40,8 +40,11 @@ func ProcessCmd(command string, commandArgs string, userID int64) string {
 		return msg
 	case "pic4mem":
 		msg := Search(commandArgs, true)
+		msgSlice := strings.Split(msg, ": ")
+		url := msgSlice[len(msgSlice)-1]
+		log.Printf("Downloading from %s", url)
 
-		if err := DownloadFile("./img/mem.jpg", msg); err != nil {
+		if err := DownloadFile("./img/mem.jpg", url); err != nil {
 			log.Println(err)
 		}
 
