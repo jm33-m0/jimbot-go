@@ -3,6 +3,7 @@
 *.dll
 *.so
 *.dylib
+jimbot-go
 
 # Test binary, build with `go test -c`
 *.test
