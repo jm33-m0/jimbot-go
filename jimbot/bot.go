@@ -1,8 +1,6 @@
 package jimbot
 
 import (
-	"bufio"
-	"io"
 	"log"
 	"os"
 	"strconv"
@@ -137,6 +135,7 @@ func onMessage(update tgbotapi.Update) {
 			if err != nil {
 				log.Println(err)
 			}
+
 			pic := tgbotapi.NewPhotoUpload(chatID, "./img/mem.jpg")
 			pic.Caption = greeting
 			pic.ReplyToMessageID = messageID
@@ -191,34 +190,6 @@ func onMessage(update tgbotapi.Update) {
 	if err != nil {
 		log.Println(err)
 	}
-}
-
-// FileToLines : Read lines from a text file
-func FileToLines(filePath string) ([]string, error) {
-	f, err := os.Open(filePath)
-	if err != nil {
-		return nil, err
-	}
-	defer func() {
-		err = f.Close()
-		if err != nil {
-			log.Println(err)
-		}
-	}()
-	return linesFromReader(f)
-}
-
-func linesFromReader(r io.Reader) ([]string, error) {
-	var lines []string
-	scanner := bufio.NewScanner(r)
-	for scanner.Scan() {
-		lines = append(lines, scanner.Text())
-	}
-	if err := scanner.Err(); err != nil {
-		return nil, err
-	}
-
-	return lines, nil
 }
 
 // ReadConfig : Read config from config file
@@ -282,26 +253,6 @@ func loginToAPI() {
 	bot.Debug = true // for debugging
 
 	log.Printf("[+] Authorized on account %s\n\n", bot.Self.UserName)
-}
-
-// AppendStringToFile : append line to file
-func AppendStringToFile(path, text string) error {
-	f, err := os.OpenFile(path, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
-	if err != nil {
-		return err
-	}
-	defer func() {
-		err = f.Close()
-		if err != nil {
-			log.Println(err)
-		}
-	}()
-
-	_, err = f.WriteString(text + "\n")
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
 func checkMemDates() (bool, string) {

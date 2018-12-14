@@ -27,6 +27,25 @@ func ProcessCmd(command string, commandArgs string, userID int64) string {
 		// NOTE not finished
 		// msg := remindMeTo(commandArgs)
 		return info
+	case "greeting4mem":
+		msg := "Done"
+
+		greeting := commandArgs
+		log.Printf("Updating config with greeting: %s", greeting)
+		err := UpdateConfig("MemdayGreetings", "MemdayGreetings: "+greeting)
+		if err != nil {
+			log.Println(err)
+		}
+
+		return msg
+	case "pic4mem":
+		msg := Search(commandArgs, true)
+
+		if err := DownloadFile("./img/mem.jpg", msg); err != nil {
+			log.Println(err)
+		}
+
+		return msg
 	case "count":
 		return countMsg()
 	case "translate":
