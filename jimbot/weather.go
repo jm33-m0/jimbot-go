@@ -26,7 +26,12 @@ func NowWeather(city string) string {
 	if err != nil {
 		log.Print("[===] WEATHER API cant be reached")
 	}
-	defer resp.Body.Close()
+	defer func() {
+		err = resp.Body.Close()
+		if err != nil {
+			log.Println(err)
+		}
+	}()
 
 	readBody, _ := ioutil.ReadAll(resp.Body)
 

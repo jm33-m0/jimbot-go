@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 
 	"github.com/buger/jsonparser"
@@ -45,7 +46,12 @@ func GetResponse(input string) string {
 		return "Could not reach Turing API"
 	}
 
-	defer resp.Body.Close()
+	defer func() {
+		err = resp.Body.Close()
+		if err != nil {
+			log.Println(err)
+		}
+	}()
 	responseRaw, _ := ioutil.ReadAll(resp.Body)
 
 	response, _ := jsonparser.GetString(responseRaw, "results", "[0]", "values", "text")

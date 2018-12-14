@@ -45,7 +45,12 @@ func GetPrice(coin string) CoinPrice {
 	}
 
 	if resp, err := http.Get(coinURL); err == nil {
-		defer resp.Body.Close()
+		defer func() {
+			err = resp.Body.Close()
+			if err != nil {
+				log.Println(err)
+			}
+		}()
 		readBody, e := ioutil.ReadAll(resp.Body)
 		if e != nil {
 			log.Println("[-] Error getting API response")

@@ -107,7 +107,12 @@ func getAltcoinPrices(coin string) string {
 func countMsg() string {
 	counter := 0
 	histfile, err := os.Open("history.txt")
-	defer histfile.Close()
+	defer func() {
+		err = histfile.Close()
+		if err != nil {
+			log.Println(err)
+		}
+	}()
 	if err != nil {
 		log.Print("Failed to read history", err)
 	}

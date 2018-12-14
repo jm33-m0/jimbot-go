@@ -49,14 +49,22 @@ func GetMarketDetail(sym string) MarketDetailReturn {
 	req.Header.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36")
 
 	if resp, err := client.Do(req); err == nil {
-		defer resp.Body.Close()
+		defer func() {
+			err = resp.Body.Close()
+			if err != nil {
+				log.Println(err)
+			}
+		}()
 		readBody, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
 			log.Println("[-] Error getting API response : failed to read response")
 			log.Print(err)
 			return retVal
 		}
-		json.Unmarshal(readBody, &retVal)
+		err = json.Unmarshal(readBody, &retVal)
+		if err != nil {
+			log.Println(err)
+		}
 	}
 
 	return retVal

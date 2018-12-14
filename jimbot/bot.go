@@ -86,8 +86,15 @@ func onMessage(update tgbotapi.Update) {
 			ReadConfig().BFID)
 		warningText := HUH + " I'm sorry, but I won't talk to you"
 		warning := tgbotapi.NewMessage(chatID, warningText)
-		bot.Send(tgbotapi.NewChatAction(chatID, tgbotapi.ChatTyping))
-		bot.Send(warning)
+		_, err := bot.Send(tgbotapi.NewChatAction(chatID, tgbotapi.ChatTyping))
+		if err != nil {
+			log.Println(err)
+		}
+
+		_, err = bot.Send(warning)
+		if err != nil {
+			log.Println(err)
+		}
 		return
 	}
 
@@ -103,8 +110,15 @@ func onMessage(update tgbotapi.Update) {
 			!strings.Contains(cmd, "pic") {
 			cmdMsg.ParseMode = "markdown"
 		}
-		bot.Send(tgbotapi.NewChatAction(chatID, tgbotapi.ChatTyping))
-		bot.Send(cmdMsg)
+		_, err := bot.Send(tgbotapi.NewChatAction(chatID, tgbotapi.ChatTyping))
+		if err != nil {
+			log.Println(err)
+		}
+
+		_, err = bot.Send(cmdMsg)
+		if err != nil {
+			log.Println(err)
+		}
 		return
 	}
 
@@ -119,11 +133,17 @@ func onMessage(update tgbotapi.Update) {
 		if memDate && userID == ReadConfig().GFID {
 
 			// send photo with greeting
-			bot.Send(tgbotapi.NewChatAction(chatID, tgbotapi.ChatUploadPhoto))
+			_, err = bot.Send(tgbotapi.NewChatAction(chatID, tgbotapi.ChatUploadPhoto))
+			if err != nil {
+				log.Println(err)
+			}
 			pic := tgbotapi.NewPhotoUpload(chatID, "./img/mem.jpg")
 			pic.Caption = greeting
 			pic.ReplyToMessageID = messageID
-			bot.Send(pic)
+			_, err = bot.Send(pic)
+			if err != nil {
+				log.Println(err)
+			}
 
 			// mark done
 			if _, err := os.Create(".memdate_detected"); err == nil {
@@ -163,8 +183,14 @@ func onMessage(update tgbotapi.Update) {
 	}
 
 	// send our reply
-	bot.Send(tgbotapi.NewChatAction(chatID, tgbotapi.ChatTyping))
-	bot.Send(replyMsg)
+	_, err := bot.Send(tgbotapi.NewChatAction(chatID, tgbotapi.ChatTyping))
+	if err != nil {
+		log.Println(err)
+	}
+	_, err = bot.Send(replyMsg)
+	if err != nil {
+		log.Println(err)
+	}
 }
 
 // FileToLines : Read lines from a text file
@@ -173,7 +199,12 @@ func FileToLines(filePath string) ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer f.Close()
+	defer func() {
+		err = f.Close()
+		if err != nil {
+			log.Println(err)
+		}
+	}()
 	return linesFromReader(f)
 }
 
@@ -259,7 +290,12 @@ func AppendStringToFile(path, text string) error {
 	if err != nil {
 		return err
 	}
-	defer f.Close()
+	defer func() {
+		err = f.Close()
+		if err != nil {
+			log.Println(err)
+		}
+	}()
 
 	_, err = f.WriteString(text + "\n")
 	if err != nil {

@@ -24,7 +24,12 @@ func ToEnglish(text string) string {
 	if err != nil {
 		log.Print("[*] Can't reach translate API")
 	}
-	defer req.Body.Close()
+	defer func() {
+		err = req.Body.Close()
+		if err != nil {
+			log.Println(err)
+		}
+	}()
 	readBody, _ := ioutil.ReadAll(req.Body)
 
 	data, _, _, _ := jsonparser.Get(readBody, "[0]", "[0]", "[0]")
