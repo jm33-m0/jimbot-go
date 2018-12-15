@@ -128,7 +128,11 @@ func onMessage(update tgbotapi.Update) {
 	// Mem dates
 	memDate, greeting := checkMemDates()
 	if _, err := os.Stat(".memdate_detected"); os.IsNotExist(err) {
-		if memDate && userID == ReadConfig().GFID {
+		targetUserID := ReadConfig().GFID
+		if _, err = os.Stat(".mem4bf"); os.IsNotExist(err) {
+			targetUserID = ReadConfig().BFID
+		}
+		if memDate && userID == targetUserID {
 
 			// send photo with greeting
 			_, err = bot.Send(tgbotapi.NewChatAction(chatID, tgbotapi.ChatUploadPhoto))

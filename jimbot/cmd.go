@@ -33,6 +33,19 @@ func ProcessCmd(command string, commandArgs string, userID int64) string {
 		if err != nil {
 			log.Println(err)
 		}
+		err = os.Remove(".mem4bf")
+		if err != nil {
+			log.Println(err)
+		}
+
+		// setting memday for whom?
+		if userID == ReadConfig().GFID {
+			if _, err := os.Create(".mem4bf"); err == nil {
+				log.Print("[MEMDATE] mem4bf file created")
+			} else {
+				log.Print("[MEM] Err creating file mem4bf")
+			}
+		}
 
 		return "Mem date set to " + date
 	case "greeting4mem":
@@ -130,8 +143,8 @@ func getAltcoinPrices(coin string) string {
 }
 
 // func googleSearch(query string, image bool) string {
-// 	log.Print("[###] Google query is : ", query)
-// 	return Search(query, image)
+//	log.Print("[###] Google query is : ", query)
+//	return Search(query, image)
 // }
 
 func countMsg() string {
