@@ -12,9 +12,9 @@ import (
 // WriteStringToFile : write or append line to file
 func WriteStringToFile(path string, text string, overwrite bool) error {
 	var err error
-	f, err := os.OpenFile(path, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
+	f, err := os.OpenFile(path, os.O_APPEND|os.O_WRONLY|os.O_CREATE, os.ModeAppend)
 	if overwrite {
-		f, err = os.OpenFile(path, os.O_WRONLY, 0644)
+		f, err = os.OpenFile(path, os.O_CREATE|os.O_WRONLY, 0644)
 	}
 	if err != nil {
 		return err
@@ -55,6 +55,10 @@ func UpdateConfig(pattern string, withStr string) error {
 		log.Println(err)
 		return err
 	}
+	err = os.Remove("config.txt")
+	if err != nil {
+		log.Println(err)
+	}
 
 	for _, line := range lines {
 		if strings.HasPrefix(line, pattern) {
@@ -63,7 +67,7 @@ func UpdateConfig(pattern string, withStr string) error {
 			line = withStr
 		}
 
-		err = WriteStringToFile("config.txt", line, true)
+		err = WriteStringToFile("config.txt", line, false)
 		if err != nil {
 			log.Printf("Error updating config: %s", err.Error())
 		}

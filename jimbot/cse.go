@@ -53,6 +53,7 @@ func Search(query string, image bool) string {
 
 	if result.Position == 0 {
 		log.Println("No results found in the top 10 pages.")
+		return noResult
 	} else if result.Result.Link == "" {
 		log.Println("[---] NO RESULTS")
 		return noResult
@@ -77,6 +78,7 @@ func doSearch(search *customsearch.CseListCall) (result Result) {
 		call, err := search.Do()
 		if err != nil {
 			log.Print("[---] CSE search failed ", err)
+			return
 		}
 
 		position, csResult := getResults(call.Items, start)
