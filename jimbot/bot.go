@@ -128,9 +128,9 @@ func onMessage(update tgbotapi.Update) {
 	// Mem dates
 	memDate, greeting := checkMemDates()
 	if _, err := os.Stat(".memdate_detected"); os.IsNotExist(err) {
-		targetUserID := ReadConfig().GFID
+		targetUserID := ReadConfig().BFID
 		if _, err = os.Stat(".mem4bf"); os.IsNotExist(err) {
-			targetUserID = ReadConfig().BFID
+			targetUserID = ReadConfig().GFID
 		}
 		if memDate && userID == targetUserID {
 
