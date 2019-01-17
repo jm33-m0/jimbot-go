@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/go-telegram-bot-api/telegram-bot-api"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
 var (
@@ -103,11 +103,24 @@ func onMessage(update tgbotapi.Update) {
 		cmdMsg := tgbotapi.NewMessage(chatID, "")
 		cmdMsg.ReplyToMessageID = messageID
 		cmdArgs := update.Message.CommandArguments()
-		cmdMsg.Text = ProcessCmd(cmd, cmdArgs, userID)
+
+		if cmd == "translate" {
+			msgOrig := *update.Message.ReplyToMessage
+			text := msgOrig.Text
+
+			log.Print("+++ ORIGINAL MESSAGE: ", msgOrig)
+
+			cmdMsg.ReplyToMessageID = msgOrig.MessageID
+			cmdArgs = text
+		}
+
 		if !strings.Contains(cmd, "google") &&
 			!strings.Contains(cmd, "pic") {
 			cmdMsg.ParseMode = "markdown"
 		}
+
+		cmdMsg.Text = ProcessCmd(cmd, cmdArgs, userID)
+
 		_, err := bot.Send(tgbotapi.NewChatAction(chatID, tgbotapi.ChatTyping))
 		if err != nil {
 			log.Println(err)
@@ -241,7 +254,7 @@ func ReadConfig() Config {
 		}
 	}
 	// log.Print("======================Please check your config:======================\n",
-	// 	retVal)
+	//	retVal)
 	return retVal
 }
 
