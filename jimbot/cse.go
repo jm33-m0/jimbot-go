@@ -46,7 +46,7 @@ func Search(query string, image bool) string {
 	}
 
 	// CSE id of your search engine
-	cseID := ReadConfig().CSE
+	cseID := initConfig.CSE
 	search.Cx(cseID)
 
 	result := doSearch(search)

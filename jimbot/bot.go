@@ -44,6 +44,9 @@ type Config struct {
 	HuobiSecretKey  string
 }
 
+// cache config data
+var initConfig Config
+
 // StartBot : Connect to Telegram bot API and start working
 func StartBot() {
 	// Login our bot
@@ -57,6 +60,9 @@ func StartBot() {
 	if err != nil {
 		log.Println("[-] Failed to get updates from Telegram server")
 	}
+
+	// Save config in memory
+	initConfig = ReadConfig()
 
 	botID = bot.Self.ID
 	for update := range updates {
@@ -83,11 +89,11 @@ func onMessage(update tgbotapi.Update) {
 
 	log.Print("[**] Got msg from userID: ", chat.userID)
 	// for strangers
-	if chat.userID != ReadConfig().BFID && chat.userID != ReadConfig().GFID {
+	if chat.userID != initConfig.BFID && chat.userID != initConfig.GFID {
 		log.Print("[!] Comparing userID <> BFID: ",
 			chat.userID,
 			" <> ",
-			ReadConfig().BFID,
+			initConfig.BFID,
 			"\nStranger detected")
 		onStranger(update, chat)
 		return
@@ -105,9 +111,9 @@ func onMessage(update tgbotapi.Update) {
 	// Mem dates
 	memDate, greeting := checkMemDates()
 	if _, err := os.Stat(".memdate_detected"); os.IsNotExist(err) {
-		targetUserID := ReadConfig().BFID
+		targetUserID := initConfig.BFID
 		if _, err = os.Stat(".mem4bf"); os.IsNotExist(err) {
-			targetUserID = ReadConfig().GFID
+			targetUserID = initConfig.GFID
 		}
 		if memDate && chat.userID == targetUserID {
 
@@ -313,9 +319,9 @@ func ReadConfig() Config {
 }
 
 func loginToAPI() {
-	log.Print(ReadConfig().Token)
+	log.Print(initConfig.Token)
 	var err error
-	bot, err = tgbotapi.NewBotAPI(ReadConfig().Token)
+	bot, err = tgbotapi.NewBotAPI(initConfig.Token)
 	if err != nil {
 		log.Println("[-] Login failed, please check your token")
 		log.Panic(err)

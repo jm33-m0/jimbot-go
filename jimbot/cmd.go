@@ -29,6 +29,7 @@ func ProcessCmd(command string, commandArgs string, userID int64) string {
 		return info
 	case "memdate":
 		date := commandArgs
+		log.Print("MemDay", "MemDay: "+date+"T00:00:00Z\n")
 		err := UpdateConfig("MemDay", "MemDay: "+date+"T00:00:00Z")
 		if err != nil {
 			log.Println(err)
@@ -39,7 +40,7 @@ func ProcessCmd(command string, commandArgs string, userID int64) string {
 		}
 
 		// setting memday for whom?
-		if userID == ReadConfig().GFID {
+		if userID == initConfig.GFID {
 			if _, err := os.Create(".mem4bf"); err == nil {
 				log.Print("[MEMDATE] mem4bf file created")
 			} else {
@@ -77,10 +78,10 @@ func ProcessCmd(command string, commandArgs string, userID int64) string {
 	case "3_day_forecast":
 		return info
 	case "weather":
-		if userID == ReadConfig().GFID {
-			return NowWeather(ReadConfig().HisCity)
+		if userID == initConfig.GFID {
+			return NowWeather(initConfig.HisCity)
 		}
-		return NowWeather(ReadConfig().HerCity)
+		return NowWeather(initConfig.HerCity)
 	case "prices":
 		msg := prices()
 		return msg
@@ -104,12 +105,12 @@ func ProcessCmd(command string, commandArgs string, userID int64) string {
 func start(userID int64) string {
 	var msg string
 	switch userID {
-	case ReadConfig().GFID:
+	case initConfig.GFID:
 		msg = "Hi, I'm your Telegram bot,\n"
 		msg += "hope I'll be loved,\n"
 		msg += "if not, well... blame him,"
 		msg += "and... I love you two\n"
-	case ReadConfig().BFID:
+	case initConfig.BFID:
 		msg = "Hi, I'm your Telegram bot, and...\n"
 		msg += "I'll always be here with you,\n"
 		msg += "and... I love you two\n"

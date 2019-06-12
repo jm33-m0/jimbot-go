@@ -30,7 +30,6 @@ var (
 func DecisionMaker() bool {
 	timeSeed := time.Now().UnixNano()
 	randNum := rand.Intn(int(timeSeed))
-	log.Print("[***] RANDNUM = ", randNum)
 	if randNum%12 == 0 {
 		log.Println("[***] DECIDED TO RESPOND")
 		return true
