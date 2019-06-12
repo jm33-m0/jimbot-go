@@ -133,7 +133,6 @@ func onMessage(update tgbotapi.Update) {
 			}
 			return
 		}
-		log.Print("[MEM] No gf detected")
 	} else if !memDate {
 		if os.Remove(".memdate_detected") == nil {
 			log.Print("[MEMDATE] not mem date, removing file")
@@ -253,6 +252,10 @@ func onCommand(update tgbotapi.Update, chat chatParams) {
 // check if a message mentions the bot
 func isMentioned(message *tgbotapi.Message) bool {
 	reply2msg := message.ReplyToMessage
+	if reply2msg == nil {
+		return false
+	}
+
 	user := reply2msg.From.ID
 	log.Printf("[+] reply2msg from: %d vs %d\n", user, botID)
 	if user == botID {
