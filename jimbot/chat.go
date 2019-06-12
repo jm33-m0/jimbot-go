@@ -5,8 +5,6 @@ import (
 	"math/rand"
 	"strings"
 	"time"
-
-	"github.com/jm33-m0/jimbot-go/turing"
 )
 
 // Emojis
@@ -119,5 +117,8 @@ func ProcessMsg(message string, userID int64) string {
 	if DecisionMaker() {
 		return ChoiceMaker(emojis)
 	}
-	return turing.GetResponse(message)
+
+	// Turing stopped free API plan (kind of), on June 6 2019
+	// return turing.GetResponse(message)
+	return ""
 }
