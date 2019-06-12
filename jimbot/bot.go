@@ -15,7 +15,7 @@ import (
 var bot *tgbotapi.BotAPI
 
 // userid of this bot
-var botID = bot.Self.ID
+var botID int
 
 // chat parameters
 type chatParams struct {
@@ -58,6 +58,7 @@ func StartBot() {
 		log.Println("[-] Failed to get updates from Telegram server")
 	}
 
+	botID = bot.Self.ID
 	for update := range updates {
 		// handles empty update, prevent panic
 		if update.Message == nil {
