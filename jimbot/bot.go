@@ -8,19 +8,23 @@ import (
 	"time"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	"github.com/jm33-m0/jimbot-go/turing"
 )
 
-var (
-	// bot api
-	bot *tgbotapi.BotAPI
+// bot api
+var bot *tgbotapi.BotAPI
 
-	// chat parameters
+// username of this bot
+var botName string
+
+// chat parameters
+type chatParams struct {
 	messageID     int
 	chatID        int64
 	userID        int64
 	chatIsPrivate bool
 	msgText       string
-)
+}
 
 // Config : Read config info from text file
 type Config struct {
@@ -28,6 +32,7 @@ type Config struct {
 	BFID int64
 
 	Token           string
+	BotName         string
 	GFName          string
 	BFName          string
 	CSE             string
@@ -54,87 +59,47 @@ func StartBot() {
 		log.Println("[-] Failed to get updates from Telegram server")
 	}
 
+	botName = ReadConfig().BotName
 	for update := range updates {
 		// handles empty update, prevent panic
 		if update.Message == nil {
 			continue
 		}
 
-		// chat parameters
-		chatID = update.Message.Chat.ID
-		messageID = update.Message.MessageID
-		chatIsPrivate = tgbotapi.Chat.IsPrivate(*update.Message.Chat)
-		msgText = update.Message.Text
-		userID = int64(update.Message.From.ID)
-
 		// handles each message
-		log.Print("[**] Got msg from userID: ", userID)
 		go onMessage(update)
 	}
 }
 
 func onMessage(update tgbotapi.Update) {
 	/* on each message, do */
+	// chat parameters
+	var chat chatParams
 
-	// say no to strangers
-	if userID != ReadConfig().BFID && userID != ReadConfig().GFID {
+	chat.chatID = update.Message.Chat.ID
+	chat.messageID = update.Message.MessageID
+	chat.chatIsPrivate = tgbotapi.Chat.IsPrivate(*update.Message.Chat)
+	chat.msgText = update.Message.Text
+	chat.userID = int64(update.Message.From.ID)
+
+	log.Print("[**] Got msg from userID: ", chat.userID)
+	// for strangers
+	if chat.userID != ReadConfig().BFID && chat.userID != ReadConfig().GFID {
 		log.Print("[!] Comparing userID <> BFID: ",
-			userID,
+			chat.userID,
 			" <> ",
-			ReadConfig().BFID)
-		warningText := HUH + " I'm sorry, but I won't talk to you"
-		warning := tgbotapi.NewMessage(chatID, warningText)
-		_, err := bot.Send(tgbotapi.NewChatAction(chatID, tgbotapi.ChatTyping))
-		if err != nil {
-			log.Println(err)
-		}
-
-		_, err = bot.Send(warning)
-		if err != nil {
-			log.Println(err)
-		}
+			ReadConfig().BFID,
+			"\nStranger detected")
+		onStranger(update, chat)
 		return
 	}
 
-	// bot commands
 	if update.Message.IsCommand() {
-		cmd := update.Message.Command()
-		cmd = strings.ToLower(cmd) // avoid markdown parsing in URL
-		cmdMsg := tgbotapi.NewMessage(chatID, "")
-		cmdMsg.ReplyToMessageID = messageID
-		cmdArgs := update.Message.CommandArguments()
-
-		if cmd == "translate" {
-			msgOrig := *update.Message.ReplyToMessage
-			text := msgOrig.Text
-
-			log.Print("+++ ORIGINAL MESSAGE: ", msgOrig)
-
-			cmdMsg.ReplyToMessageID = msgOrig.MessageID
-			cmdArgs = text
-		}
-
-		if !strings.Contains(cmd, "google") &&
-			!strings.Contains(cmd, "pic") {
-			cmdMsg.ParseMode = "markdown"
-		}
-
-		cmdMsg.Text = ProcessCmd(cmd, cmdArgs, userID)
-
-		_, err := bot.Send(tgbotapi.NewChatAction(chatID, tgbotapi.ChatTyping))
-		if err != nil {
-			log.Println(err)
-		}
-
-		_, err = bot.Send(cmdMsg)
-		if err != nil {
-			log.Println(err)
-		}
-		return
+		onCommand(update, chat)
 	}
 
 	// Write to histfile
-	if WriteStringToFile("history.txt", "[*] "+msgText, false) == nil {
+	if WriteStringToFile("history.txt", "[*] "+chat.msgText, false) == nil {
 		log.Println("[+] Message recorded")
 	}
 
@@ -145,17 +110,17 @@ func onMessage(update tgbotapi.Update) {
 		if _, err = os.Stat(".mem4bf"); os.IsNotExist(err) {
 			targetUserID = ReadConfig().GFID
 		}
-		if memDate && userID == targetUserID {
+		if memDate && chat.userID == targetUserID {
 
 			// send photo with greeting
-			_, err = bot.Send(tgbotapi.NewChatAction(chatID, tgbotapi.ChatUploadPhoto))
+			_, err = bot.Send(tgbotapi.NewChatAction(chat.chatID, tgbotapi.ChatUploadPhoto))
 			if err != nil {
 				log.Println(err)
 			}
 
-			pic := tgbotapi.NewPhotoUpload(chatID, "./img/mem.jpg")
+			pic := tgbotapi.NewPhotoUpload(chat.chatID, "./img/mem.jpg")
 			pic.Caption = greeting
-			pic.ReplyToMessageID = messageID
+			pic.ReplyToMessageID = chat.messageID
 			_, err = bot.Send(pic)
 			if err != nil {
 				log.Println(err)
@@ -178,9 +143,19 @@ func onMessage(update tgbotapi.Update) {
 		}
 	}
 
+	// from here, we handle normal messages
 	var replyMsg tgbotapi.MessageConfig
-	if chatIsPrivate {
-		replyMsg = tgbotapi.NewMessage(chatID, ProcessMsg(msgText, userID))
+
+	// get a reply
+	replyProcessed := ProcessMsg(chat.msgText, chat.userID)
+	// stop when we dont have a reply
+	if replyProcessed == "" {
+		return
+	}
+
+	// be quiet in group chats
+	if chat.chatIsPrivate {
+		replyMsg = tgbotapi.NewMessage(chat.chatID, replyProcessed)
 	} else {
 
 		// decide if make reponse
@@ -192,14 +167,14 @@ func onMessage(update tgbotapi.Update) {
 		log.Println("[***] MAKING RESPONSE")
 
 		// Generate reply
-		replyMsg = tgbotapi.NewMessage(chatID, ProcessMsg(msgText, userID))
+		replyMsg = tgbotapi.NewMessage(chat.chatID, ProcessMsg(chat.msgText, chat.userID))
 
 		// if not in private chat, quote msg
-		replyMsg.ReplyToMessageID = messageID
+		replyMsg.ReplyToMessageID = chat.messageID
 	}
 
 	// send our reply
-	_, err := bot.Send(tgbotapi.NewChatAction(chatID, tgbotapi.ChatTyping))
+	_, err := bot.Send(tgbotapi.NewChatAction(chat.chatID, tgbotapi.ChatTyping))
 	if err != nil {
 		log.Println(err)
 	}
@@ -207,6 +182,84 @@ func onMessage(update tgbotapi.Update) {
 	if err != nil {
 		log.Println(err)
 	}
+}
+
+// restrict access for strngers
+func onStranger(update tgbotapi.Update, chat chatParams) {
+	if chat.chatIsPrivate || isMentioned(update.Message) {
+		// use turing 123
+		turingReply := tgbotapi.NewMessage(chat.chatID, turing.GetResponse(chat.msgText))
+		_, err := bot.Send(tgbotapi.NewChatAction(chat.chatID, tgbotapi.ChatTyping))
+		if err != nil {
+			log.Println(err)
+		}
+
+		_, err = bot.Send(turingReply)
+		if err != nil {
+			log.Println(err)
+		}
+	}
+	if update.Message.IsCommand() {
+		onCommand(update, chat)
+	}
+}
+
+func onCommand(update tgbotapi.Update, chat chatParams) {
+	// bot commands
+	cmd := update.Message.Command()
+	cmd = strings.ToLower(cmd) // avoid markdown parsing in URL
+	cmdMsg := tgbotapi.NewMessage(chat.chatID, "")
+	cmdMsg.ReplyToMessageID = chat.messageID
+	cmdArgs := update.Message.CommandArguments()
+
+	// private commands
+	privateCmds := [...]string{"greeting4mem", "pic4mem", "memdate", "count", "start"}
+	for _, priCmd := range privateCmds {
+		log.Printf("[*] Private command: %s vs %s", cmd, priCmd)
+		if cmd == priCmd {
+			log.Printf("[!] Private command hit: %s", cmd)
+			return
+		}
+	}
+
+	if cmd == "translate" {
+		msgOrig := *update.Message.ReplyToMessage
+		text := msgOrig.Text
+
+		log.Print("+++ ORIGINAL MESSAGE: ", msgOrig)
+
+		cmdMsg.ReplyToMessageID = msgOrig.MessageID
+		cmdArgs = text
+	}
+
+	if !strings.Contains(cmd, "google") &&
+		!strings.Contains(cmd, "pic") {
+		cmdMsg.ParseMode = "markdown"
+	}
+
+	cmdMsg.Text = ProcessCmd(cmd, cmdArgs, chat.userID)
+
+	_, err := bot.Send(tgbotapi.NewChatAction(chat.chatID, tgbotapi.ChatTyping))
+	if err != nil {
+		log.Println(err)
+	}
+
+	_, err = bot.Send(cmdMsg)
+	if err != nil {
+		log.Println(err)
+	}
+	return
+}
+
+// check if a message mentions the bot
+func isMentioned(message *tgbotapi.Message) bool {
+	reply2msg := message.ReplyToMessage
+	user := reply2msg.From.UserName
+	log.Printf("[+] reply2msg from: %s vs %s\n", user, botName)
+	if user == botName {
+		return true
+	}
+	return false
 }
 
 // ReadConfig : Read config from config file
@@ -232,6 +285,8 @@ func ReadConfig() Config {
 			retVal.BFID, _ = strconv.ParseInt(strings.Trim(value, "\n"), 0, 64)
 		case "Token":
 			retVal.Token = strings.Trim(value, "\n")
+		case "Bot":
+			retVal.BotName = strings.Trim(value, "\n")
 		case "CSE":
 			retVal.CSE = strings.Trim(value, "\n")
 		case "HerCity":
