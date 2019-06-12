@@ -219,11 +219,13 @@ func onCommand(update tgbotapi.Update, chat chatParams) {
 
 	// private commands
 	privateCmds := [...]string{"greeting4mem", "pic4mem", "memdate", "count", "start"}
-	for _, priCmd := range privateCmds {
-		log.Printf("[*] Private command: %s vs %s", cmd, priCmd)
-		if cmd == priCmd {
-			log.Printf("[!] Private command hit: %s", cmd)
-			return
+	if chat.userID != InitConfig.GFID && chat.userID != InitConfig.BFID {
+		for _, priCmd := range privateCmds {
+			log.Printf("[*] Private command: %s vs %s", cmd, priCmd)
+			if cmd == priCmd {
+				log.Printf("[!] Private command hit: %s", cmd)
+				return
+			}
 		}
 	}
 
