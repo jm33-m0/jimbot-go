@@ -49,6 +49,9 @@ var InitConfig Config
 
 // StartBot : Connect to Telegram bot API and start working
 func StartBot() {
+	// Save config in memory
+	InitConfig = ReadConfig()
+
 	// Login our bot
 	loginToAPI()
 
@@ -60,9 +63,6 @@ func StartBot() {
 	if err != nil {
 		log.Println("[-] Failed to get updates from Telegram server")
 	}
-
-	// Save config in memory
-	InitConfig = ReadConfig()
 
 	botID = bot.Self.ID
 	for update := range updates {
