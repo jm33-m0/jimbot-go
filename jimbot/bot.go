@@ -14,8 +14,8 @@ import (
 // bot api
 var bot *tgbotapi.BotAPI
 
-// username of this bot
-var botName string
+// userid of this bot
+var botID = bot.Self.ID
 
 // chat parameters
 type chatParams struct {
@@ -32,7 +32,6 @@ type Config struct {
 	BFID int64
 
 	Token           string
-	BotName         string
 	GFName          string
 	BFName          string
 	CSE             string
@@ -59,7 +58,6 @@ func StartBot() {
 		log.Println("[-] Failed to get updates from Telegram server")
 	}
 
-	botName = ReadConfig().BotName
 	for update := range updates {
 		// handles empty update, prevent panic
 		if update.Message == nil {
@@ -254,9 +252,9 @@ func onCommand(update tgbotapi.Update, chat chatParams) {
 // check if a message mentions the bot
 func isMentioned(message *tgbotapi.Message) bool {
 	reply2msg := message.ReplyToMessage
-	user := reply2msg.From.UserName
-	log.Printf("[+] reply2msg from: %s vs %s\n", user, botName)
-	if user == botName {
+	user := reply2msg.From.ID
+	log.Printf("[+] reply2msg from: %d vs %d\n", user, botID)
+	if user == botID {
 		return true
 	}
 	return false
@@ -276,17 +274,13 @@ func ReadConfig() Config {
 		case "Girlfriend":
 			retVal.GFName = value
 		case "GFID":
-			log.Print("[++] GFID string: ", value)
 			retVal.GFID, _ = strconv.ParseInt(strings.Trim(value, "\n"), 0, 64)
 		case "Boyfriend":
 			retVal.BFName = value
 		case "BFID":
-			log.Print("[++] BFID string: ", value)
 			retVal.BFID, _ = strconv.ParseInt(strings.Trim(value, "\n"), 0, 64)
 		case "Token":
 			retVal.Token = strings.Trim(value, "\n")
-		case "Bot":
-			retVal.BotName = strings.Trim(value, "\n")
 		case "CSE":
 			retVal.CSE = strings.Trim(value, "\n")
 		case "HerCity":
