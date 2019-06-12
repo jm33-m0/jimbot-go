@@ -187,6 +187,7 @@ func onStranger(update tgbotapi.Update, chat chatParams) {
 	if chat.chatIsPrivate || isMentioned(update.Message) {
 		// use turing 123
 		turingReply := tgbotapi.NewMessage(chat.chatID, turing.GetResponse(chat.msgText))
+		turingReply.ReplyToMessageID = chat.messageID
 		_, err := bot.Send(tgbotapi.NewChatAction(chat.chatID, tgbotapi.ChatTyping))
 		if err != nil {
 			log.Println(err)
