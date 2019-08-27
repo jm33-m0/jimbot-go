@@ -230,13 +230,16 @@ func onCommand(update tgbotapi.Update, chat chatParams) {
 	}
 
 	if cmd == "translate" {
-		msgOrig := *update.Message.ReplyToMessage
-		text := msgOrig.Text
-
-		log.Print("+++ ORIGINAL MESSAGE: ", msgOrig)
-
-		cmdMsg.ReplyToMessageID = msgOrig.MessageID
-		cmdArgs = text
+		if update.Message.ReplyToMessage != nil {
+			msgOrig := *update.Message.ReplyToMessage
+			text := msgOrig.Text
+			cmdMsg.ReplyToMessageID = msgOrig.MessageID
+			cmdArgs = text
+		} else {
+			cmdArgs = strings.Join(
+				strings.Split(
+					update.Message.Text, " ")[1:], " ")
+		}
 	}
 
 	if !strings.Contains(cmd, "google") &&
