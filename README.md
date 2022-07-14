@@ -1,14 +1,12 @@
-# jimbot-go
-a telegram bot for my gf
-
-## screenshot
+# JimBot-Go
+A Telegram bot for my GF :)
 
 ![](/screenshots/screenshots.jpg)
 
-## usage
+## How to get started
 
 ```
 go get -v -u github.com/jm33-m0/jimbot-go
 cp $GOPATH/bin/jimbot-go .
 ```
-then modify `config.txt`, and run the executable
+Then modify `config.txt` and run the executable. Have fun!
