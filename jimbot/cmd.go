@@ -30,7 +30,7 @@ func ProcessCmd(command string, commandArgs string, userID int64) string {
 	case "memdate":
 		date := commandArgs
 		log.Print("MemDay", "MemDay: "+date+"T00:00:00Z\n")
-		err := UpdateConfig("MemDay", "MemDay: "+date+"T00:00:00Z")
+		err := UpdateConfig("MemDay", date+"T00:00:00Z")
 		if err != nil {
 			log.Println(err)
 		}
@@ -54,7 +54,7 @@ func ProcessCmd(command string, commandArgs string, userID int64) string {
 
 		greeting := commandArgs
 		log.Printf("Updating config with greeting: %s", greeting)
-		err := UpdateConfig("MemdayGreetings", "MemdayGreetings: "+greeting)
+		err := UpdateConfig("MemdayGreetings", greeting)
 		if err != nil {
 			log.Println(err)
 		}

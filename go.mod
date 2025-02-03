@@ -5,6 +5,7 @@ go 1.23.5
 require (
 	github.com/buger/jsonparser v1.1.1
 	github.com/go-telegram-bot-api/telegram-bot-api v4.6.4+incompatible
+	golang.org/x/crypto v0.32.0
 	golang.org/x/oauth2 v0.25.0
 	google.golang.org/api v0.219.0
 )
@@ -25,7 +26,6 @@ require (
 	go.opentelemetry.io/otel v1.32.0 // indirect
 	go.opentelemetry.io/otel/metric v1.32.0 // indirect
 	go.opentelemetry.io/otel/trace v1.32.0 // indirect
-	golang.org/x/crypto v0.32.0 // indirect
 	golang.org/x/net v0.34.0 // indirect
 	golang.org/x/sys v0.29.0 // indirect
 	golang.org/x/text v0.21.0 // indirect

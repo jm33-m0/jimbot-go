@@ -2,11 +2,12 @@ package jimbot
 
 import (
 	"bufio"
+	"encoding/json" // new import
+	"fmt"           // new import
 	"io"
 	"log"
 	"net/http"
 	"os"
-	"strings"
 )
 
 // WriteStringToFile : write or append line to file
@@ -48,29 +49,43 @@ func FileToLines(filePath string) ([]string, error) {
 	return linesFromReader(f)
 }
 
-// UpdateConfig : Grep a line and replace it with a given string
+// Updated UpdateConfig : Update a key in config.json without overwriting existing values
 func UpdateConfig(pattern string, withStr string) error {
-	lines, err := FileToLines("config.txt")
+	// Open and decode config.json into a map
+	file, err := os.Open("config.json")
 	if err != nil {
 		log.Println(err)
 		return err
 	}
-	err = os.Remove("config.txt")
-	if err != nil {
+	defer file.Close()
+
+	var configMap map[string]interface{}
+	if err = json.NewDecoder(file).Decode(&configMap); err != nil {
 		log.Println(err)
+		return err
 	}
 
-	for _, line := range lines {
-		if strings.HasPrefix(line, pattern) {
-			greeting := strings.Split(line, ": ")[1]
-			log.Printf("Replacing %s with %s", greeting, withStr)
-			line = withStr
-		}
+	// Update the key if it exists
+	if _, ok := configMap[pattern]; ok {
+		configMap[pattern] = withStr
+	} else {
+		log.Printf("[-] Key %s not found", pattern)
+		return fmt.Errorf("key not found: %s", pattern)
+	}
 
-		err = WriteStringToFile("config.txt", line, false)
-		if err != nil {
-			log.Printf("Error updating config: %s", err.Error())
-		}
+	// Write the updated map back to config.json
+	outFile, err := os.Create("config.json")
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	defer outFile.Close()
+
+	encoder := json.NewEncoder(outFile)
+	encoder.SetIndent("", "  ") // format with indentation
+	if err = encoder.Encode(configMap); err != nil {
+		log.Println(err)
+		return err
 	}
 
 	return nil

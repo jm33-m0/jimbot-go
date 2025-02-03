@@ -1,9 +1,9 @@
 package jimbot
 
 import (
+	"encoding/json" // new import
 	"log"
 	"os"
-	"strconv"
 	"strings"
 	"time"
 
@@ -26,22 +26,21 @@ type chatParams struct {
 	msgText       string
 }
 
-// Config : Read config info from text file
+// Updated Config : now matches config.json keys with json tags
 type Config struct {
-	GFID int64
-	BFID int64
-
-	Token           string
-	GFName          string
-	BFName          string
-	CSE             string
-	HerCity         string
-	HisCity         string
-	MemDay          string
-	MemdayGreetings string
-	Birthday        string
-	HuobiAccessKey  string
-	HuobiSecretKey  string
+	GFID            int64  `json:"GFID"`
+	BFID            int64  `json:"BFID"`
+	Token           string `json:"Token"`
+	GFName          string `json:"Girlfriend"`
+	BFName          string `json:"Boyfriend"`
+	CSE             string `json:"CSE"`
+	HerCity         string `json:"HerCity"`
+	HisCity         string `json:"HisCity"`
+	MemDay          string `json:"MemDay"`
+	MemdayGreetings string `json:"MemdayGreetings"`
+	Birthday        string `json:"Birthday"`
+	HuobiAccessKey  string `json:"HuobiAccessKey"`
+	HuobiSecretKey  string `json:"HuobiSecretKey"`
 }
 
 // InitConfig : cache config data
@@ -272,51 +271,19 @@ func isMentioned(message *tgbotapi.Message) bool {
 	return user == botID
 }
 
-// ReadConfig : Read config from config file
+// Modified ReadConfig: loads configuration from config.json file
 func ReadConfig() Config {
-	var retVal Config
-	lines, err := FileToLines("config.txt")
+	file, err := os.Open("config.json")
 	if err != nil {
-		log.Println("[-] Can't read config file")
-		log.Fatal(err)
+		log.Fatal("[-] Can't read config file: ", err)
 	}
-	for _, line := range lines {
-		value := strings.Split(line, ": ")[1]
-		switch strings.Split(line, ": ")[0] {
-		case "Girlfriend":
-			retVal.GFName = value
-		case "GFID":
-			retVal.GFID, _ = strconv.ParseInt(strings.Trim(value, "\n"), 0, 64)
-		case "Boyfriend":
-			retVal.BFName = value
-		case "BFID":
-			retVal.BFID, _ = strconv.ParseInt(strings.Trim(value, "\n"), 0, 64)
-		case "Token":
-			retVal.Token = strings.Trim(value, "\n")
-		case "CSE":
-			retVal.CSE = strings.Trim(value, "\n")
-		case "HerCity":
-			retVal.HerCity = strings.Trim(value, "\n")
-		case "HisCity":
-			retVal.HisCity = strings.Trim(value, "\n")
-		case "Birthday":
-			retVal.Birthday = strings.Trim(value, "\n")
-		case "MemDay":
-			retVal.MemDay = strings.Trim(value, "\n")
-		case "MemdayGreetings":
-			retVal.MemdayGreetings = strings.Trim(value, "\n")
-		case "HuobiAccessKey":
-			retVal.HuobiAccessKey = strings.Trim(value, "\n")
-		case "HuobiSecretKey":
-			retVal.HuobiSecretKey = strings.Trim(value, "\n")
-		default:
-			log.Println("[-] Check your config file")
-			os.Exit(1)
-		}
+	defer file.Close()
+
+	var config Config
+	if err = json.NewDecoder(file).Decode(&config); err != nil {
+		log.Fatal("[-] Failed to decode config: ", err)
 	}
-	// log.Print("======================Please check your config:======================\n",
-	//	retVal)
-	return retVal
+	return config
 }
 
 func loginToAPI() {
