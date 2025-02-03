@@ -1,12 +1,14 @@
 package jimbot
 
 import (
-	"io/ioutil"
+	"context"
 	"log"
+	"os"
+	"strconv"
 
-	"golang.org/x/oauth2"
 	google "golang.org/x/oauth2/google"
 	customsearch "google.golang.org/api/customsearch/v1"
+	"google.golang.org/api/option"
 )
 
 // Result : CSE search result type
@@ -21,7 +23,7 @@ const (
 
 // Search : CSE search, for external use
 func Search(query string, image bool) string {
-	data, err := ioutil.ReadFile("cse-search-key.json")
+	data, err := os.ReadFile("cse-search-key.json")
 	if err != nil {
 		log.Print("[---] google json not found")
 		return noResult
@@ -37,13 +39,16 @@ func Search(query string, image bool) string {
 	// Initiate an http.Client. The following GET request will be
 	// authorized and authenticated on the behalf of
 	// your service account.
-	client := conf.Client(oauth2.NoContext)
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	client := conf.Client(ctx)
 
-	cseService, _ := customsearch.New(client)
-	search := cseService.Cse.List(query)
-	if image == true {
+	cseService, _ := customsearch.NewService(ctx, option.WithHTTPClient(client))
+	search := cseService.Cse.List()
+	if image {
 		search.SearchType("image")
 	}
+	search.Q(query)
 
 	// CSE id of your search engine
 	cseID := InitConfig.CSE
@@ -92,7 +97,12 @@ func doSearch(search *customsearch.CseListCall) (result Result) {
 		}
 
 		// No more search results?
-		if call.SearchInformation.TotalResults < start {
+		totalResults, err := strconv.ParseInt(call.SearchInformation.TotalResults, 10, 64)
+		if err != nil {
+			log.Print("[---] Failed to parse total results ", err)
+			return
+		}
+		if totalResults < start {
 			return
 		}
 		start = start + 10
