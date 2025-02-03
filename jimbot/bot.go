@@ -94,12 +94,16 @@ func onMessage(update tgbotapi.Update) {
 			" <> ",
 			InitConfig.BFID,
 			"\nStranger detected")
-		onStranger(update, chat)
+		chatbot(update, chat)
 		return
 	}
 
+	// for BF and GF
+
 	if update.Message.IsCommand() {
 		onCommand(update, chat)
+	} else {
+		chatbot(update, chat)
 	}
 
 	// Write to histfile
@@ -187,18 +191,17 @@ func onMessage(update tgbotapi.Update) {
 	}
 }
 
-// restrict access for strngers
-func onStranger(update tgbotapi.Update, chat chatParams) {
+// restrict access for strangers
+func chatbot(update tgbotapi.Update, chat chatParams) {
 	if chat.chatIsPrivate || isMentioned(update.Message) {
-		// use turing 123
-		turingReply := tgbotapi.NewMessage(chat.chatID, turing.GetResponse(chat.msgText))
-		turingReply.ReplyToMessageID = chat.messageID
+		resp := turing.GetResponse(update.Message.Text)
+		msg := tgbotapi.NewMessage(chat.chatID, resp)
+		msg.ReplyToMessageID = chat.messageID
 		_, err := bot.Send(tgbotapi.NewChatAction(chat.chatID, tgbotapi.ChatTyping))
 		if err != nil {
 			log.Println(err)
 		}
-
-		_, err = bot.Send(turingReply)
+		_, err = bot.Send(msg)
 		if err != nil {
 			log.Println(err)
 		}
