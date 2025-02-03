@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -30,7 +31,7 @@ func GetResponse(input, modelName string) string {
 	lastRequestTime = time.Now()
 	rateLimiterMu.Unlock()
 
-	data := []byte(fmt.Sprintf(`{"model": %s, "prompt": "%s", "stream": false}`, modelName, input))
+	data := []byte(fmt.Sprintf(`{"model": "%s", "prompt": "%s", "stream": false}`, modelName, input))
 
 	req, err := http.NewRequest("POST", apiURL, bytes.NewBuffer(data))
 	if err != nil {
@@ -53,6 +54,7 @@ func GetResponse(input, modelName string) string {
 		}
 	}()
 	responseRaw, _ := io.ReadAll(resp.Body)
+	log.Printf("Raw response from Ollama: %s", strconv.Quote(string(responseRaw)))
 
 	// Define a struct to parse the full JSON response from the API
 	var res struct {
@@ -74,11 +76,14 @@ func GetResponse(input, modelName string) string {
 	if err != nil {
 		log.Printf("Failed to parse response '%s': %v", responseRaw, err)
 		// Return valid JSON so the caller can parse it
-		return `{"response": "", "done": true}`
+		return `{"response": "Failed to parse response", "done": true}`
 	}
 
 	// Strip the <think></think> block from the response
 	cleanResponse := strings.ReplaceAll(res.Response, "<think>", "")
 	cleanResponse = strings.ReplaceAll(cleanResponse, "</think>", "")
+	if cleanResponse == "" {
+		cleanResponse = "I'm sorry, I don't have a response for that"
+	}
 	return cleanResponse
 }

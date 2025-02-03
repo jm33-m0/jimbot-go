@@ -45,7 +45,7 @@ type Config struct {
 }
 
 // InitConfig : cache config data
-var InitConfig Config
+var InitConfig = Config{}
 
 // StartBot : Connect to Telegram bot API and start working
 func StartBot() {
@@ -196,6 +196,7 @@ func onMessage(update tgbotapi.Update) {
 func chatbot(update tgbotapi.Update, chat chatParams) {
 	if chat.chatIsPrivate || isMentioned(update.Message) {
 		resp := turing.GetResponse(update.Message.Text, InitConfig.OllamaModelName)
+		log.Printf("[*] Ollama response: '%s'\n", resp)
 		msg := tgbotapi.NewMessage(chat.chatID, resp)
 		msg.ReplyToMessageID = chat.messageID
 		_, err := bot.Send(tgbotapi.NewChatAction(chat.chatID, tgbotapi.ChatTyping))
@@ -287,6 +288,7 @@ func ReadConfig() Config {
 	if err = json.NewDecoder(file).Decode(&config); err != nil {
 		log.Fatal("[-] Failed to decode config: ", err)
 	}
+	log.Printf("[+] Config loaded: %+v\n", config)
 	return config
 }
 
