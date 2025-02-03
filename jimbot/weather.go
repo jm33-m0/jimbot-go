@@ -2,20 +2,12 @@ package jimbot
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"strings"
 
 	"github.com/buger/jsonparser"
-)
-
-// not used, but might be useful anyway
-const (
-	clouds = "⛅"
-	sunny  = "☀️"
-	rain   = "🌧"
-	snow   = "🌨"
 )
 
 // NowWeather : Current weather info from his/her city
@@ -33,11 +25,10 @@ func NowWeather(city string) string {
 		}
 	}()
 
-	readBody, _ := ioutil.ReadAll(resp.Body)
+	readBody, _ := io.ReadAll(resp.Body)
 
 	status, _, _, _ := jsonparser.Get(readBody, "results", "[0]", "now", "text")
 	temp, _, _, _ := jsonparser.Get(readBody, "results", "[0]", "now", "temperature")
-	var retVal string
-	retVal = "`Now in " + strings.ToUpper(city) + ": " + string(status) + "\nTemp: " + string(temp) + " °C`"
+	retVal := "`Now in " + strings.ToUpper(city) + ": " + string(status) + "\nTemp: " + string(temp) + " °C`"
 	return retVal
 }

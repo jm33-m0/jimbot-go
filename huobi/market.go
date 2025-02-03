@@ -2,7 +2,7 @@ package huobi
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 )
@@ -55,7 +55,7 @@ func GetMarketDetail(sym string) MarketDetailReturn {
 				log.Println(err)
 			}
 		}()
-		readBody, err := ioutil.ReadAll(resp.Body)
+		readBody, err := io.ReadAll(resp.Body)
 		if err != nil {
 			log.Println("[-] Error getting API response : failed to read response")
 			log.Print(err)

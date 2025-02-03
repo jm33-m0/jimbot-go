@@ -176,14 +176,3 @@ func countMsg() string {
 	log.Print("[HIST LENGTH] ", counter)
 	return (HII + " I've received " + strconv.Itoa(counter) + " messages from you two, and you've been together for " + days + " days.")
 }
-
-// NOTE not finished
-func remindMeTo(args string) string {
-	var reminder Reminder
-	if strings.Contains(args, "明天") {
-		reminder.notifyTime = time.Now().AddDate(0, 0, 1)
-	}
-	reminder.event = args
-
-	return Notifier(reminder)
-}

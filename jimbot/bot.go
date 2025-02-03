@@ -258,7 +258,6 @@ func onCommand(update tgbotapi.Update, chat chatParams) {
 	if err != nil {
 		log.Println(err)
 	}
-	return
 }
 
 // check if a message mentions the bot
@@ -270,10 +269,7 @@ func isMentioned(message *tgbotapi.Message) bool {
 
 	user := reply2msg.From.ID
 	log.Printf("[+] reply2msg from: %d vs %d\n", user, botID)
-	if user == botID {
-		return true
-	}
-	return false
+	return user == botID
 }
 
 // ReadConfig : Read config from config file
