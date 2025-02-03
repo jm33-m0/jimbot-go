@@ -26,10 +26,11 @@ type chatParams struct {
 	msgText       string
 }
 
-// Updated Config : now matches config.json keys with json tags
+// Config : Bot configuration
 type Config struct {
 	GFID            int64  `json:"GFID"`
 	BFID            int64  `json:"BFID"`
+	OllamaModelName string `json:"OllamaModelName"`
 	Token           string `json:"Token"`
 	GFName          string `json:"Girlfriend"`
 	BFName          string `json:"Boyfriend"`
@@ -194,7 +195,7 @@ func onMessage(update tgbotapi.Update) {
 // restrict access for strangers
 func chatbot(update tgbotapi.Update, chat chatParams) {
 	if chat.chatIsPrivate || isMentioned(update.Message) {
-		resp := turing.GetResponse(update.Message.Text)
+		resp := turing.GetResponse(update.Message.Text, InitConfig.OllamaModelName)
 		msg := tgbotapi.NewMessage(chat.chatID, resp)
 		msg.ReplyToMessageID = chat.messageID
 		_, err := bot.Send(tgbotapi.NewChatAction(chat.chatID, tgbotapi.ChatTyping))

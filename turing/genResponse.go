@@ -2,12 +2,12 @@ package turing
 
 import (
 	"bytes"
-	"encoding/json" // added import
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
-	"strings" // added import
+	"strings"
 	"sync"
 	"time"
 )
@@ -20,7 +20,7 @@ var (
 )
 
 // GetResponse : get response from ollama server
-func GetResponse(input string) string {
+func GetResponse(input, modelName string) string {
 	// Rate limiting to 1 request per 10 seconds
 	rateLimiterMu.Lock()
 	elapsed := time.Since(lastRequestTime)
@@ -30,8 +30,7 @@ func GetResponse(input string) string {
 	lastRequestTime = time.Now()
 	rateLimiterMu.Unlock()
 
-	// Updated payload with model, prompt, and stream fields for API
-	data := []byte(fmt.Sprintf(`{"model": "deepseek-r1:14b", "prompt": "%s", "stream": false}`, input))
+	data := []byte(fmt.Sprintf(`{"model": %s, "prompt": "%s", "stream": false}`, modelName, input))
 
 	req, err := http.NewRequest("POST", apiURL, bytes.NewBuffer(data))
 	if err != nil {

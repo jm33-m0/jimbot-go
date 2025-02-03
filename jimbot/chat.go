@@ -41,7 +41,7 @@ func ChoiceMaker(choices []string) string {
 func ProcessMsg(message string, userID int64) string {
 	// say something
 	if DecisionMaker() {
-		return turing.GetResponse(message)
+		return turing.GetResponse(message, InitConfig.OllamaModelName)
 	}
 	return ""
 }
