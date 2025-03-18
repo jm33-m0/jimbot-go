@@ -3,7 +3,6 @@ package jimbot
 import (
 	"log"
 	"math/rand"
-	"time"
 
 	"github.com/jm33-m0/jimbot-go/turing"
 )
@@ -23,8 +22,7 @@ const (
 
 // DecisionMaker : decide if a a reply is needed, randomly
 func DecisionMaker() bool {
-	timeSeed := time.Now().UnixNano()
-	randNum := rand.Intn(int(timeSeed))
+	randNum := rand.Int()
 	if randNum%12 == 0 {
 		log.Println("[***] DECIDED TO RESPOND")
 		return true
@@ -39,9 +37,5 @@ func ChoiceMaker(choices []string) string {
 
 // ProcessMsg : handles chat messages
 func ProcessMsg(message string, userID int64) string {
-	// say something
-	if DecisionMaker() {
-		return turing.GetResponse(message, InitConfig.OllamaModelName)
-	}
-	return ""
+	return turing.GetResponse(message, InitConfig.OllamaModelName)
 }
