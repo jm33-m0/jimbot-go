@@ -154,15 +154,15 @@ func onMessage(update tgbotapi.Update) {
 	// from here, we handle normal messages
 	var replyMsg tgbotapi.MessageConfig
 
-	// get a reply
-	replyProcessed := ProcessMsg(chat.msgText, chat.userID)
-	// stop when we dont have a reply
-	if replyProcessed == "" {
-		return
-	}
-
 	// be quiet in group chats
 	if chat.chatIsPrivate {
+		// get a reply
+		replyProcessed := ProcessMsg(chat.msgText, chat.userID)
+		// stop when we dont have a reply
+		if replyProcessed == "" {
+			return
+		}
+
 		replyMsg = tgbotapi.NewMessage(chat.chatID, replyProcessed)
 	} else {
 
