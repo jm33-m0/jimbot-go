@@ -13,6 +13,8 @@ import (
 	"time"
 )
 
+const prompt = "Your name is jimbot, a telegram bot in a chat group. Remember to act like a human group member, try to generate a response based on the chat history given to you, don't say anything other than the reponse itself, use the same language as indicated in the chat history. Chat history is as follows: "
+
 const apiURL = "http://127.0.0.1:11434/api/generate" // updated endpoint
 
 var (
@@ -31,7 +33,7 @@ func GetResponse(input, modelName string) string {
 	lastRequestTime = time.Now()
 	rateLimiterMu.Unlock()
 
-	data := []byte(fmt.Sprintf(`{"model": "%s", "prompt": "%s", "stream": false}`, modelName, input))
+	data := []byte(fmt.Sprintf(`{"model": "%s", "prompt": "%s", "stream": false}`, modelName, prompt+input))
 
 	req, err := http.NewRequest("POST", apiURL, bytes.NewBuffer(data))
 	if err != nil {

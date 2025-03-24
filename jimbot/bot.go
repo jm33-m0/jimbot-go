@@ -180,8 +180,8 @@ func onMessage(update tgbotapi.Update) {
 		log.Println("[***] MAKING RESPONSE")
 
 		// Generate reply
-		prompt := fmt.Sprintf("%s; %s; Your name is jimbot, a telegram bot in a chat group, the chat history given to you is separated using semicolon, excluding this prompt. Remember to act like a human group member, try to generate a response based on the chat history given to you, don't say anything other than the reponse itself, use the same language as indicated in the chat history", CachedMessages, chat.msgText)
-		replyMsg = tgbotapi.NewMessage(chat.chatID, ProcessMsg(prompt, chat.userID))
+		new_msg := fmt.Sprintf("%s; %s", CachedMessages, chat.msgText)
+		replyMsg = tgbotapi.NewMessage(chat.chatID, ProcessMsg(new_msg, chat.userID))
 		CachedMessages = "" // clear cache
 	}
 
