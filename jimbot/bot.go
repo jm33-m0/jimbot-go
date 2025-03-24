@@ -2,6 +2,7 @@ package jimbot
 
 import (
 	"encoding/json" // new import
+	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -25,6 +26,9 @@ type chatParams struct {
 	chatIsPrivate bool
 	msgText       string
 }
+
+// cache recent messages in case we need to reply
+var CachedMessages string
 
 // Config : Bot configuration
 type Config struct {
@@ -168,17 +172,17 @@ func onMessage(update tgbotapi.Update) {
 
 		// decide if make reponse
 		if !DecisionMaker() {
-			log.Println("[***] IGNORING MSG")
+			CachedMessages += chat.msgText + ";"
+			log.Printf("[***] Caching message: %s\n", CachedMessages)
 			return
 		}
 
 		log.Println("[***] MAKING RESPONSE")
 
 		// Generate reply
-		replyMsg = tgbotapi.NewMessage(chat.chatID, ProcessMsg(chat.msgText, chat.userID))
-
-		// if not in private chat, quote msg
-		replyMsg.ReplyToMessageID = chat.messageID
+		prompt := fmt.Sprintf("%s; %s; Your name is jimbot, a telegram bot in a chat group, the chat history given to you is separated using semicolon, excluding this prompt. Remember to act like a human group member, try to generate a response based on the chat history given to you, don't say anything other than the reponse itself, use the same language as indicated in the chat history", CachedMessages, chat.msgText)
+		replyMsg = tgbotapi.NewMessage(chat.chatID, ProcessMsg(prompt, chat.userID))
+		CachedMessages = "" // clear cache
 	}
 
 	// send our reply
