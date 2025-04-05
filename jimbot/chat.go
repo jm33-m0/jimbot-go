@@ -23,10 +23,11 @@ const (
 // DecisionMaker : decide if a a reply is needed, randomly
 func DecisionMaker() bool {
 	randNum := rand.Int()
-	if randNum%12 == 0 {
-		log.Println("[***] DECIDED TO RESPOND")
+	if randNum%6 == 0 {
+		log.Println("[+++] DECIDED TO RESPOND")
 		return true
 	}
+	log.Println("[***] DECIDED TO IGNORE")
 	return false
 }
 
