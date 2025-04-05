@@ -106,8 +106,6 @@ func onMessage(update tgbotapi.Update) {
 
 	if update.Message.IsCommand() {
 		onCommand(update, chat)
-	} else {
-		chatbot(update, chat)
 	}
 
 	// Write to histfile
