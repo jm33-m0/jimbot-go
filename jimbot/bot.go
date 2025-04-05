@@ -100,7 +100,6 @@ func onMessage(update tgbotapi.Update) {
 			InitConfig.BFID,
 			"\nStranger detected")
 		chatbot(update, chat)
-		return
 	}
 
 	// for BF and GF
